@@ -23,6 +23,6 @@ KANDIDATEN = [
 browser = next((k for k in KANDIDATEN if Path(k).exists() or shutil.which(k)), None)
 if not browser:
     sys.exit("Kein Edge/Chrome gefunden.")
-subprocess.run([browser, "--headless", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=1",
+subprocess.run([browser, "--headless", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=2",
                 "--window-size=1200,627", f"--screenshot={ZIEL}", VORLAGE.as_uri()], check=True)
 print(f"{ZIEL.relative_to(ROOT)} erstellt")

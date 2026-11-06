@@ -1,5 +1,6 @@
 <!doctype html>
-<!-- Vorlage für das LinkedIn-Vorschaubild (grenzgaenger/static/og-bild.png, 1200×627).
+<!-- Vorlage für das Vorschaubild (grenzgaenger/static/og-bild.png, 1200×627, gerendert in doppelter Auflösung).
+     Alles Wichtige steht in der Mitte (627×627): WhatsApp & Co. schneiden daraus ein Quadrat aus.
      Neu erzeugen:  .venv\Scripts\python design\build_og_bild.py -->
 <html lang="de-CH">
 <head>
@@ -7,35 +8,29 @@
 <style>
   html, body { margin: 0; width: 1200px; height: 627px; overflow: hidden; }
   body {
-    background: #faf9f5; color: #141413;
-    font-family: "Segoe UI", system-ui, sans-serif;
-    display: flex; flex-direction: column; justify-content: space-between;
-    padding: 64px 80px; box-sizing: border-box; position: relative;
+    background: #faf9f5; color: #141413; font-family: "Segoe UI", system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    position: relative;
   }
-  body::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: #c96442; }
-  .brand { display: flex; align-items: center; gap: 18px; font-family: "Palatino Linotype", Palatino, Georgia, serif; font-size: 34px; }
-  .brand .m { width: 56px; height: 56px; border-radius: 14px; background: #c96442; display: grid; place-items: center; }
-  .brand b { color: #c96442; font-weight: 500; }
-  h1 { font-family: "Palatino Linotype", Palatino, Georgia, serif; font-weight: 500; font-size: 74px; line-height: 1.08; letter-spacing: -0.015em; margin: 0; max-width: 1000px; }
-  p { font-size: 30px; color: #4d4c48; margin: 22px 0 0; max-width: 980px; line-height: 1.35; }
-  .chips { display: flex; gap: 14px; font-size: 24px; color: #4d4c48; }
-  .chip { display: inline-flex; align-items: center; gap: 10px; background: #fff; border: 2px solid #e6e2d6; border-radius: 999px; padding: 8px 20px; }
-  .chip i { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+  /* Grenzlinien links und rechts – ausserhalb des quadratischen Ausschnitts */
+  .grenze { position: absolute; top: 70px; bottom: 70px; width: 0; border-left: 5px dashed #e3d6cc; }
+  .grenze.l { left: 205px; } .grenze.r { right: 205px; }
+  .pfeil { position: absolute; top: 50%; width: 150px; height: 60px; margin-top: -30px; }
+  .pfeil.l { left: 130px; } .pfeil.r { right: 130px; }
+  .m { width: 112px; height: 112px; border-radius: 28px; background: #c96442; display: grid; place-items: center; margin-bottom: 22px; }
+  .name { font-family: "Palatino Linotype", Palatino, Georgia, serif; font-size: 50px; margin-bottom: 26px; }
+  .name b { color: #c96442; font-weight: 500; }
+  h1 { font-family: "Palatino Linotype", Palatino, Georgia, serif; font-weight: 500; font-size: 46px; line-height: 1.15; margin: 0; max-width: 560px; color: #3a3935; }
+  .unten { position: absolute; bottom: 0; left: 0; right: 0; height: 14px; background: #c96442; }
 </style>
 </head>
 <body>
-  <div class="brand">
-    <span class="m"><svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 3v3M12 9.5v5M12 18v3M4 12h15M15.5 8.5 19 12l-3.5 3.5" fill="none" stroke-linecap="round" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg></span>
-    <span><b>KI</b>-Grenzgänger</span>
-  </div>
-  <div>
-    <h1>Welche KI darf mit Ihren Firmendaten über die Grenze?</h1>
-    <p>Über 100 KI-Tools eingeordnet: Schweiz, Europa oder USA – und sind Kundendaten erlaubt?</p>
-  </div>
-  <div class="chips">
-    <span class="chip"><i style="background:#2f8a57"></i>Geeignet</span>
-    <span class="chip"><i style="background:#b8820e"></i>Mit Vorkehrungen</span>
-    <span class="chip"><i style="background:#c0392b"></i>Nicht geeignet</span>
-      </div>
+  <div class="grenze l"></div><div class="grenze r"></div>
+  <svg class="pfeil l" viewBox="0 0 150 60"><path d="M10 30h120M112 14l18 16-18 16" fill="none" stroke="#c96442" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/></svg>
+  <svg class="pfeil r" viewBox="0 0 150 60"><path d="M10 30h120M112 14l18 16-18 16" fill="none" stroke="#c96442" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/></svg>
+  <div class="m"><svg viewBox="0 0 24 24" width="66" height="66"><path d="M12 3v3M12 9.5v5M12 18v3M4 12h15M15.5 8.5 19 12l-3.5 3.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="name"><b>KI</b>-Grenzgänger</div>
+  <h1>Welche KI darf<br>mit Ihren Firmendaten<br>über die Grenze?</h1>
+  <div class="unten"></div>
 </body>
 </html>
