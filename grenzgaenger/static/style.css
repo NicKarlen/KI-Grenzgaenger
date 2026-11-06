@@ -413,8 +413,8 @@ a.opt:hover { color: var(--text); border-color: var(--accent); transform: transl
   .dr-bd { padding: 1.1rem 1.1rem 3rem; }
 }
 /* Menü-Knopf: nur auf dem Handy und nur mit JavaScript (ohne JS bleibt die Navigation sichtbar) */
-.menu-btn { display: none; align-items: center; gap: .4rem; font: inherit; font-size: .9rem; font-weight: 500; color: var(--text);
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .4rem .75rem; cursor: pointer; }
+.menu-btn { display: none; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; }
 .menu-btn:hover { border-color: var(--border-strong); }
 .menu-btn[aria-expanded="true"] { background: var(--bg-2); }
 

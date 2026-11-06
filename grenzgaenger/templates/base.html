@@ -31,7 +31,7 @@
         <span class="brand-m"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3v3M12 9.5v5M12 18v3M4 12h15M15.5 8.5 19 12l-3.5 3.5" fill="none" stroke-linecap="round" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span>
         <span class="brand-t"><b>KI</b>-Grenzgänger</span>
       </a>
-      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="hauptnav" data-menu>{{ icon("menu", 18) }}<span>Menü</span></button>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="hauptnav" aria-label="Menü" data-menu>{{ icon("menu", 20) }}</button>
       <nav class="nav" id="hauptnav" aria-label="Hauptnavigation">
         <a href="{{ url() }}" {% if seite == 'berater' %}aria-current="page"{% endif %}>Berater</a>
         <a href="{{ url('verzeichnis/') }}" {% if seite in ('verzeichnis', 'detail') %}aria-current="page"{% endif %}>Verzeichnis</a>
