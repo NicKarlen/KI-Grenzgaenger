@@ -117,7 +117,7 @@ svg { flex: none; }
 .ton-schlecht .ti { background: var(--rot-soft); color: var(--rot); }
 .ton-offen .ti { background: var(--grau-soft); color: var(--text-2); }
 .det-amps { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-.det-achtung { background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 14px; padding: 1rem 1.25rem; }
+.det-achtung { background: var(--accent-soft); border-radius: 14px; padding: 1rem 1.25rem; }
 .det-achtung h2 { color: var(--accent-text); font-size: 1.05rem; margin-bottom: .3rem; }
 .det-achtung p { margin: 0; }
 .det-fakten { display: grid; grid-template-columns: repeat(2, 1fr); gap: .65rem; }
@@ -296,7 +296,7 @@ a.opt:hover { color: var(--text); border-color: var(--accent); transform: transl
 .vz-row:first-of-type { border-top: 0; }
 .vz-row:hover { background: var(--bg); color: var(--text); }
 .vz-row:last-child { border-radius: 0 0 16px 16px; }
-.vz-row.aktiv { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+.vz-row.aktiv { background: var(--accent-soft); }
 .c-tool .nm { display: block; font-family: var(--serif); font-size: 1.06rem; line-height: 1.3; }
 .c-tool .an { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; font-size: .8rem; color: var(--text-3); margin-top: .2rem; }
 .c-art { display: grid; gap: .4rem; justify-items: start; }
@@ -334,8 +334,8 @@ a.opt:hover { color: var(--text); border-color: var(--accent); transform: transl
 .analyse-layout > * { min-width: 0; }
 .analyse-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 3rem; align-items: start; }
 .toc { position: sticky; top: calc(var(--topbar) + 24px); padding-top: 2.5rem; font-size: .875rem; }
-.toc ul { list-style: none; padding: 0; margin: 0; border-left: 1px solid var(--border); }
-.toc a { display: block; padding: .3rem .9rem; color: var(--text-2); text-decoration: none; }
+.toc ul { list-style: none; padding: 0; margin: 0; }
+.toc a { display: block; padding: .3rem 0; color: var(--text-2); text-decoration: none; }
 .toc a:hover { color: var(--accent-text); }
 .analyse { max-width: 780px; }
 .analyse h3 { margin-top: 1.75rem; }
@@ -431,7 +431,6 @@ a.opt:hover { color: var(--text); border-color: var(--accent); transform: transl
     background: var(--bg); border-bottom: 1px solid var(--border); box-shadow: var(--shadow-lg); padding: .5rem 16px 1rem; }
   .js .nav.offen { display: flex; }
   .js .nav a { font-size: 1.02rem; padding: .8rem .9rem; border-radius: 10px; }
-  .js .nav a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); }
 }
 
 /* ---------- Berater: weitere Tools aufklappen ---------- */
