@@ -1,0 +1,34 @@
+name: Fehler melden
+description: Eine Angabe ist falsch oder veraltet, oder ein Tool fehlt.
+title: "Fehler: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke fürs Melden! Am hilfreichsten ist ein Link auf die Quelle (Vertrag, Datenschutzerklärung, Dokumentation).
+        Bitte keine vertraulichen Informationen eintragen – Meldungen sind öffentlich.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool
+      description: Name oder ID des Tools (steht in der Adresse, z.B. ch-infomaniak-euria). Leer lassen, wenn ein Tool fehlt.
+  - type: textarea
+    id: fehler
+    attributes:
+      label: Was ist falsch oder fehlt?
+      description: Welche Angabe stimmt nicht, und wie lautet sie richtig?
+    validations:
+      required: true
+  - type: input
+    id: quelle
+    attributes:
+      label: Quelle
+      description: Link, der die Korrektur belegt.
+  - type: dropdown
+    id: absender
+    attributes:
+      label: Sie sind …
+      options:
+        - Nutzerin / Nutzer
+        - Anbieter des Tools
+        - Andere

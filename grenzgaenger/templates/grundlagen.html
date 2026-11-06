@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Grundlagen{% endblock %}
+{% block content %}
+<div class="wrap narrow prosa">
+  <p class="eyebrow">Grundlagen</p>
+  <h1>KI im KMU – was Sie über Datenschutz wissen müssen</h1>
+  <p class="lead">Die wichtigsten Regeln auf einer Seite. Fachbegriffe erklären wir unten im Glossar.</p>
+
+  <section class="regeln">
+    <h2>Fünf Faustregeln</h2>
+    <ol class="regel-liste">
+      <li>
+        <h3>Gratis- und Privatversionen nie für Firmendaten</h3>
+        <p>ChatGPT Free/Plus, Claude Free/Pro, Copilot für Privatkunden oder Gemini-Apps sind für Unternehmensdaten ungeeignet. Ihre Eingaben können zum Training verwendet werden, und es gibt keinen Datenschutzvertrag.</p>
+      </li>
+      <li>
+        <h3>Ohne Datenschutzvertrag (AVV) keine Personendaten</h3>
+        <p>Sobald Namen, Adressen oder Kundenakten in die KI gelangen, brauchen Sie einen Auftragsverarbeitungsvertrag mit dem Anbieter. Geschäftsversionen bieten das meistens an – aber oft muss man es aktiv abschliessen.</p>
+      </li>
+      <li>
+        <h3>«Hosting in der Schweiz» heisst nicht immer «Verarbeitung in der Schweiz»</h3>
+        <p>Viele Anbieter speichern Ihre Chats in der Schweiz oder in Deutschland, schicken die Anfragen aber an ein KI-Modell in den USA. Prüfen Sie darum immer beides: <em>Speicherort</em> und <em>Verarbeitungsort</em>.</p>
+      </li>
+      <li>
+        <h3>Websuche ist die grösste Lücke</h3>
+        <p>Wenn die KI im Internet sucht, gehen Ihre Fragen oft an Suchmaschinen – meist ohne Datenschutzvertrag. Bei sensiblen Daten die Websuche ausschalten.</p>
+      </li>
+      <li id="berufsgeheimnis">
+        <h3>Berufsgeheimnis braucht eine Zusatzvereinbarung</h3>
+        <p>Anwältinnen, Ärzte, Treuhänder und Behörden dürfen geschützte Daten nur einsetzen, wenn der Anbieter sich zusätzlich zur Geheimhaltung verpflichtet (Art. 320/321 StGB). Die Kanzlei VISCHER stellt dafür eine <a href="https://www.rosenthal.ch/downloads/VISCHER_Musterklausel_Berufsgeheimnis_KI.docx" target="_blank" rel="noopener">Musterklausel</a> bereit.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Die Wahl in drei Schritten</h2>
+    <div class="schritte">
+      <div class="schritt"><span class="nr">1</span><h3>Daten einordnen</h3><p>Allgemeine Infos, Personendaten oder Berufsgeheimnis? Davon hängt alles Weitere ab.</p></div>
+      <div class="schritt"><span class="nr">2</span><h3>Datenort festlegen</h3><p>Schweiz, Europa oder egal? Für die meisten KMU reicht Europa inkl. Schweiz.</p></div>
+      <div class="schritt"><span class="nr">3</span><h3>Vertrag prüfen</h3><p>AVV vorhanden? Kein Training mit Ihren Daten? Websuche abschaltbar?</p></div>
+    </div>
+    <p><a class="btn btn-p" href="{{ url() }}">Jetzt passendes Tool finden</a></p>
+  </section>
+
+  <section>
+    <h2>Wie wir bewerten</h2>
+    <p>Jedes Tool erhält zwei Ampeln: eine für <strong>Personendaten</strong> (Datenschutzgesetz DSG/DSGVO) und eine für das <strong>Berufsgeheimnis</strong>. Wo die Kanzlei VISCHER ein Tool in ihrer Tabelle (Stand 8.7.2026) rechtlich bewertet hat, folgen wir dieser Bewertung und kennzeichnen das Tool mit «VISCHER-geprüft». Alle anderen Ampeln sind unsere eigene Einordnung auf Basis öffentlicher Anbieterangaben.</p>
+    <ul class="ampel-erklaerung">
+      <li><span class="amp amp-gruen"><i></i> {{ ampel.gruen.label }}</span> Mit Geschäftsvertrag unbedenklich nutzbar.</li>
+      <li><span class="amp amp-gelb"><i></i> {{ ampel.gelb.label }}</span> Nutzbar, wenn Vertrag, Region und Einstellungen stimmen.</li>
+      <li><span class="amp amp-orange"><i></i> {{ ampel.orange.label }}</span> Nur mit verhandeltem Zusatz oder für Teilbereiche.</li>
+      <li><span class="amp amp-rot"><i></i> {{ ampel.rot.label }}</span> Keine Firmendaten eingeben.</li>
+      <li><span class="amp amp-abh"><i></i> {{ ampel.abh.label }}</span> Z.B. offene Modelle: sicher, wenn Sie sie auf eigenen Servern betreiben.</li>
+      <li><span class="amp amp-offen"><i></i> {{ ampel.offen.label }}</span> Öffentliche Angaben reichen nicht – beim Anbieter nachfragen.</li>
+    </ul>
+    <p class="muted">Angaben mit dem Vermerk <span class="chip chip-o">noch offen</span> sind öffentlich nicht belegt. Verträge und Einstellungen ändern sich laufend; massgeblich ist der Vertrag am Tag der Unterzeichnung.</p>
+  </section>
+
+  <section id="leistung">
+    <h2>Wie wir die Leistung einschätzen</h2>
+    <p>Datenschutz allein macht noch keine gute Wahl: Ein Tool muss auch gute Antworten liefern. Wir ordnen darum jedes KI-Tool grob einer von drei Stufen zu – je nachdem, welche KI-Modelle Sie dort bekommen. Massstab sind öffentliche Vergleichsranglisten (Artificial Analysis Intelligence Index, Stand November 2026), in denen die drei Gruppen klar getrennt liegen.</p>
+    <ul class="ampel-erklaerung">
+      <li><span class="lst lst-spitze">{{ icon("spark", 13) }}Spitzenmodelle</span> Die leistungsfähigsten Modelle von OpenAI (GPT), Anthropic (Claude) und Google (Gemini). Am besten für komplexe Aufgaben, Analysen und Programmieren.</li>
+      <li><span class="lst lst-stark">{{ icon("spark", 13) }}Starke offene Modelle</span> Grosse, frei verfügbare Modelle wie Qwen, DeepSeek, GLM, Kimi oder Mistral Large. Sehr gut für Texte, Zusammenfassungen und Fragen an eigene Dokumente – bei schwierigen Aufgaben etwas schwächer.</li>
+      <li><span class="lst lst-basis">{{ icon("spark", 13) }}Kleinere Modelle</span> Kleinere oder ältere Modelle (z.B. Apertus, Llama 3.3, Mistral Small, Gemma). Für einfache Aufgaben geeignet.</li>
+    </ul>
+    <p><strong>Die Leistung hängt vom Datenort ab.</strong> Viele Plattformen bieten GPT oder Claude nur über US-Anbieter an. Wer die Daten in der Schweiz halten will, bekommt dort oft «nur» starke offene Modelle. Wir bewerten darum jedes Tool dreifach: für Daten nur in der Schweiz, für Daten in Europa und ohne Vorgabe. Der Berater und das Verzeichnis zeigen jeweils die Stufe, die zu Ihrer Wahl passt.</p>
+    <p class="muted">Die Stufen sind bewusst grob: Neue Modelle erscheinen monatlich, und die Unterschiede innerhalb einer Stufe hängen stark von der Aufgabe ab. Wo öffentlich nicht bekannt ist, welche Modelle ein Anbieter nutzt, steht «Noch nicht beurteilt». Für Übersetzung, Transkription, Datenbanken und Server geben wir keine Leistungsstufe an.</p>
+  </section>
+
+  <section>
+    <h2>Glossar</h2>
+    <dl class="glossar">
+      <div><dt>AVV / DPA</dt><dd>Auftragsverarbeitungsvertrag (engl. Data Processing Agreement). Regelt, dass der Anbieter Ihre Daten nur in Ihrem Auftrag bearbeitet. Pflicht, sobald Personendaten im Spiel sind.</dd></div>
+      <div><dt>Speicherort («at rest»)</dt><dd>Wo Ihre Chats, Dateien und Wissensdatenbanken dauerhaft abgelegt sind.</dd></div>
+      <div><dt>Inferenz / Verarbeitungsort</dt><dd>Der Ort, an dem das KI-Modell Ihre Anfrage tatsächlich berechnet. Kann in einem anderen Land liegen als der Speicherort.</dd></div>
+      <div><dt>Datenzone</dt><dd>Grosse Cloud-Anbieter verteilen Anfragen innerhalb einer Zone (z.B. «EU»), statt in einem einzelnen Land. Die Schweiz ist oft Teil der EU-Zone.</dd></div>
+      <div><dt>US CLOUD Act</dt><dd>US-Gesetz, das US-Behörden erlaubt, von US-Firmen Daten herauszuverlangen – auch wenn diese in Europa gespeichert sind. Betrifft Microsoft, Google, Amazon, OpenAI, Anthropic usw.</dd></div>
+      <div><dt>Sub-Prozessor</dt><dd>Ein weiterer Dienstleister, den Ihr Anbieter einsetzt – z.B. eine deutsche KI-Plattform, die im Hintergrund Modelle von OpenAI über Microsoft nutzt.</dd></div>
+      <div><dt>Open-Weight-Modell</dt><dd>KI-Modell, dessen «Gewichte» frei verfügbar sind (z.B. Mistral, Qwen, Apertus). Kann von jedem Anbieter – auch in der Schweiz oder auf eigenen Servern – betrieben werden.</dd></div>
+      <div><dt>Proprietäres Modell</dt><dd>Geschlossenes Modell eines Herstellers (z.B. GPT, Claude, Gemini). Nur über den Hersteller oder dessen Cloud-Partner nutzbar.</dd></div>
+      <div><dt>ZDR (Zero Data Retention)</dt><dd>Der Anbieter speichert Ihre Anfragen nach der Bearbeitung gar nicht.</dd></div>
+      <div><dt>Abuse Monitoring</dt><dd>Der Anbieter speichert Anfragen eine Zeit lang, um Missbrauch zu erkennen – teils mit Sichtung durch Mitarbeitende. Für Berufsgeheimnisse problematisch.</dd></div>
+      <div><dt>On-Prem</dt><dd>Die KI läuft auf Servern in Ihrem eigenen Unternehmen. Maximale Kontrolle, aber höherer Aufwand.</dd></div>
+      <div><dt>Apertus</dt><dd>Offenes KI-Sprachmodell aus der Schweiz (ETH, EPFL, CSCS). Wird von mehreren Schweizer Anbietern gehostet.</dd></div>
+      <div><dt>VISCHER-Tabelle</dt><dd>Rechtliche Übersicht der Zürcher Kanzlei VISCHER (David Rosenthal) zu gängigen KI-Tools für Schweizer Unternehmen. <a href="https://rosenthal.ch/downloads/VISCHER_ki-tools-07-26.pdf" target="_blank" rel="noopener">PDF (Juli 2026)</a></dd></div>
+    </dl>
+  </section>
+
+  <section class="cta-box">
+    <h2>Mehr Hintergrund?</h2>
+    <p>Die vollständige Marktanalyse beschreibt den Schweizer, europäischen und US-Markt, die Trends 2026 und den Abgleich mit der VISCHER-Tabelle.</p>
+    <a class="btn btn-g" href="{{ url('marktanalyse/') }}">Zur Marktanalyse</a>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% from "_makros.html" import amp, kat, lst %}
+<article class="det">
+  {{ kat(tool) }}
+  <h1>{{ tool.name }}</h1>
+  <div class="det-anb"><span class="reg" title="{{ tool.raw.region_anbieter }}">{{ tool.region_kurz }}</span>{{ tool.anbieter }}{% if tool.vischer %}<span class="chip chip-v">VISCHER-geprüft</span>{% endif %}</div>
+
+  <div class="det-was">
+    <p><b>Was ist das?</b> {{ tool.kat.text }} {{ tool.raw.subkategorie }}.</p>
+    {{ kann_auch(tool) }}
+  </div>
+
+  <section class="det-kurz">
+    <h2>Kurz gesagt</h2>
+    <ul>
+      {% for k in tool.kurz_gesagt_fuer("") %}<li class="ton-{{ k.ton }}"><span class="ti" aria-hidden="true">{{ k.ton|ton_icon }}</span><span>{{ k.text }}</span></li>{% endfor %}
+    </ul>
+    <div class="det-amps">
+      {{ lst(tool.lstg) }}
+      {{ amp(tool.ampel_pd, "Personendaten: ") }}
+      {{ amp(tool.ampel_bg, "Berufsgeheimnis: ") }}
+    </div>
+  </section>
+
+  {% if tool.raw.hinweise_fallstricke %}
+  <section class="det-achtung">
+    <h2>Darauf sollten Sie achten</h2>
+    <p>{{ tool.raw.hinweise_fallstricke }}</p>
+  </section>
+  {% endif %}
+
+  <section class="det-fakten">
+    {% for f in tool.fakten %}
+    <div class="fk{% if f.offen %} offen{% endif %}"><span>{{ f.titel }}</span><b>{{ f.wert or "–" }}</b></div>
+    {% endfor %}
+  </section>
+
+  {% if tool.raw.vischer_einschaetzung %}
+  <section class="det-vischer">
+    <h2>Rechtliche Einschätzung VISCHER</h2>
+    <p>{{ tool.raw.vischer_einschaetzung }}</p>
+    <p class="muted klein">Paraphrasiert aus der Tabelle «Gängige KI-Tools: Wie steht es um den Schutz der Daten?» (Stand 8.7.2026). <a href="https://rosenthal.ch/downloads/VISCHER_ki-tools-07-26.pdf" target="_blank" rel="noopener">Original-PDF öffnen</a></p>
+  </section>
+  {% endif %}
+
+  <section>
+    <div class="det-h">
+      <h2>Alle Details</h2>
+      <button type="button" class="btn btn-t btn-klein" data-toggle-all>Alle aufklappen</button>
+    </div>
+    {% for g in gruppen %}{% if g.zeilen %}
+    <details class="acc">
+      <summary><span>{{ g.titel }}</span>{% if g.offen_anzahl %}<span class="chip chip-o">{{ g.offen_anzahl }} offen</span>{% endif %}</summary>
+      <dl>
+        {% for z in g.zeilen %}
+        <div class="row"><dt>{{ z.label }}<small>{{ z.hilfe }}</small></dt><dd>{% if z.offen %}<span class="chip chip-o">noch offen</span> {% endif %}{{ z.wert }}</dd></div>
+        {% endfor %}
+      </dl>
+    </details>
+    {% endif %}{% endfor %}
+    <details class="acc">
+      <summary><span>Quellen &amp; Aktualität</span></summary>
+      <ul class="q">
+        {% for q in tool.quellen %}<li><a href="{{ q }}" target="_blank" rel="noopener">{{ q|domain }}</a><small>{{ q }}</small></li>
+        {% else %}<li class="muted">Keine Quellen erfasst.</li>{% endfor %}
+      </ul>
+      <p class="muted klein acc-fuss">Geprüft am {{ tool.raw.stand|datum }} · {{ tool.pruefpunkte }} offene{% if tool.pruefpunkte == 1 %}r{% endif %} Prüfpunkt{% if tool.pruefpunkte != 1 %}e{% endif %}. Angaben mit «noch offen» sind öffentlich nicht belegt und sollten vor einem Einsatz beim Anbieter bestätigt werden.</p>
+    </details>
+    {% if repo_url %}
+    <p class="muted klein det-melden">Angabe falsch oder veraltet? <a href="{{ repo_url }}/issues/new?template=fehler-melden.yml&amp;tool={{ tool.id|urlencode }}&amp;title={{ ('Fehler: ' ~ tool.name)|urlencode }}" target="_blank" rel="noopener">Fehler melden</a> – auch Anbieter sind willkommen.</p>
+    {% endif %}
+  </section>
+</article>

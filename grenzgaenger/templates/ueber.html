@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Über das Projekt{% endblock %}
+{% block description %}Was der KI-Grenzgänger ist, wie die Tools bewertet werden, wie vollständig die Daten sind – und wie Sie Fehler melden können.{% endblock %}
+{% block content %}
+<div class="wrap narrow prosa">
+  <p class="eyebrow">Über das Projekt</p>
+  <h1>Ein unabhängiger Wegweiser, kein Verkaufsportal</h1>
+  <p class="lead">Der KI-Grenzgänger hilft Schweizer KMU bei einer einfachen Frage: Welche KI-Tools darf ich mit meinen Firmendaten nutzen – und wo landen diese Daten?</p>
+
+  <section>
+    <h2>Wer steht dahinter?</h2>
+    <ul>
+      <li>Ein unabhängiges Projekt. Kein Anbieter bezahlt für die Aufnahme oder für eine Bewertung.</li>
+      <li>Keine Werbung, keine Affiliate-Links, kein Tracking. Die Website lädt keine Schriften oder Skripte von Dritten.</li>
+      <li>Der Quellcode und alle Daten sind öffentlich auf GitHub einsehbar{% if repo_url %}: <a href="{{ repo_url }}" target="_blank" rel="noopener">zum Repository</a>{% endif %}. Jede Änderung ist dort nachvollziehbar.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Wie bewertet wird</h2>
+    <p>Jedes Tool erhält zwei Ampeln: eine für <strong>Personendaten</strong> und eine für das <strong>Berufsgeheimnis</strong>. Wo die Kanzlei VISCHER ein Tool rechtlich bewertet hat, übernehmen wir diese Bewertung («VISCHER-geprüft»). Alle anderen Ampeln sind eine eigene Einordnung auf Basis öffentlicher Anbieterangaben. Jeder Steckbrief nennt seine Quellen.</p>
+    <p><a href="{{ url('grundlagen/') }}">Ampeln und Leistungsstufen im Detail</a></p>
+  </section>
+
+  <section>
+    <h2>Wie vollständig sind die Daten?</h2>
+    <p><strong>{{ daten_geprueft }} von {{ daten_anzahl }} Tools</strong> sind vollständig belegt. Bei den übrigen sind einzelne Angaben öffentlich nicht dokumentiert – sie sind im Steckbrief mit <span class="chip chip-o">noch offen</span> markiert und sollten vor einem Einsatz beim Anbieter nachgefragt werden.</p>
+    <p>Datenstand: {{ daten_stand|datum }}. Anbieter ändern Verträge und Rechenzentren laufend; massgeblich ist immer der Vertrag am Tag der Unterzeichnung.</p>
+  </section>
+
+  <section id="fehler">
+    <h2>Fehler gefunden?</h2>
+    <p>Eine Angabe ist falsch, veraltet oder ein Tool fehlt? Melden Sie es – auch Anbieter sind ausdrücklich willkommen. Am besten mit einer Quelle (Link auf Vertrag, Datenschutzerklärung oder Dokumentation).</p>
+    {% if repo_url %}
+    <p><a class="btn btn-p" href="{{ repo_url }}/issues/new?template=fehler-melden.yml" target="_blank" rel="noopener">{{ icon("github", 16) }} Fehler auf GitHub melden</a></p>
+    <p class="muted klein">Dafür braucht es ein kostenloses GitHub-Konto. Meldungen sind öffentlich sichtbar.</p>
+    {% else %}
+    {# Nur in der lokalen Vorschau ohne GitHub-Remote: online setzt der Workflow die Repo-Adresse #}
+    <p class="muted">Fehler können als Issue im GitHub-Repository gemeldet werden. (Der Link erscheint, sobald das Repository auf GitHub verbunden ist.)</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Weiterverwenden und teilen</h2>
+    <p>Texte und Daten stehen unter der Lizenz <a href="https://creativecommons.org/licenses/by/4.0/deed.de" target="_blank" rel="noopener">CC BY 4.0</a>: Sie dürfen sie frei teilen, zitieren und weiterverwenden – auch kommerziell –, solange Sie die Quelle nennen, z.B. «Quelle: KI-Grenzgänger»{% if site_url %} mit Link auf {{ site_url }}{% endif %}.</p>
+  </section>
+
+  <section class="cta-box">
+    <h2>Keine Rechtsberatung</h2>
+    <p>{{ daten_hinweis }} Für einen konkreten Einsatz mit Personendaten oder Berufsgeheimnissen lohnt sich eine Prüfung durch eine Fachperson.</p>
+    <a class="btn btn-g" href="{{ url() }}">Zum Berater</a>
+  </section>
+</div>
+{% endblock %}

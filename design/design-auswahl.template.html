@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design-Auswahl · KI-Grenzgänger</title>
+<style>
+/* ============================================================
+   Basis – Farben im Stil von claude.ai
+   ============================================================ */
+:root{
+  --bg:#faf9f5;--bg-2:#f0eee6;--bg-3:#e8e5da;--surface:#fff;
+  --border:#e6e2d6;--border-strong:#d4cfc0;
+  --text:#141413;--text-2:#4d4c48;--text-3:#83827d;
+  --accent:#c96442;--accent-hover:#b4552f;--accent-soft:#f6e8e1;--accent-text:#9c4527;
+  --gruen:#2f8a57;--gruen-soft:#e3f1e8;--gelb:#b8820e;--gelb-soft:#f8efd6;
+  --orange:#d16a1e;--orange-soft:#fbe6d5;--rot:#c0392b;--rot-soft:#f7e0dc;
+  --grau:#9a978d;--grau-soft:#eceae3;--blau:#4a6fa5;--blau-soft:#e4ebf5;
+  --serif:"Tiempos Headline","Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,ui-serif,serif;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --shadow:0 1px 2px rgba(20,20,19,.04),0 2px 8px rgba(20,20,19,.04);
+  --shadow-lg:0 4px 10px rgba(20,20,19,.05),0 18px 40px rgba(20,20,19,.10);
+  --sw:44px; color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#262624;--bg-2:#1f1e1d;--bg-3:#353431;--surface:#30302e;
+  --border:#3e3d39;--border-strong:#55534d;
+  --text:#f5f4ef;--text-2:#c9c7bd;--text-3:#9b998f;
+  --accent:#d97757;--accent-hover:#e48a6b;--accent-soft:#43312a;--accent-text:#eda189;
+  --gruen:#5cba84;--gruen-soft:#2a3a30;--gelb:#e0b54a;--gelb-soft:#3d3626;
+  --orange:#ec9050;--orange-soft:#42322a;--rot:#e46b5d;--rot-soft:#432b28;
+  --grau:#a5a298;--grau-soft:#3a3936;--blau:#86a6d6;--blau-soft:#2d3442;
+  --shadow:0 1px 2px rgba(0,0,0,.25);--shadow-lg:0 12px 36px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+a{color:var(--accent-text);text-underline-offset:3px}
+h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.01em;line-height:1.2;margin:0 0 .5em}
+p{margin:0 0 1em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.muted{color:var(--text-3)}.klein{font-size:.85rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg{flex:none}
+
+/* ---------- Umschalter (nur für die Auswahl) ---------- */
+.switcher{position:sticky;top:0;z-index:100;background:#141413;color:#f5f4ef;font-size:.85rem;height:var(--sw)}
+.switcher-in{max-width:1320px;height:100%;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:.75rem}
+.switcher strong{font-weight:600;white-space:nowrap}
+.sw-tabs{display:flex;gap:.25rem;background:#2a2a28;padding:3px;border-radius:10px}
+.sw-tabs button{background:none;border:0;color:#c9c7bd;padding:.3rem .8rem;border-radius:8px;cursor:pointer;white-space:nowrap}
+.sw-tabs button[aria-pressed="true"]{background:#d97757;color:#fff}
+.sw-desc{color:#9b998f;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-theme{background:#2a2a28;border:0;color:#f5f4ef;border-radius:8px;padding:.3rem .7rem;cursor:pointer;white-space:nowrap}
+
+/* ---------- Bausteine ---------- */
+.brand{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--serif);font-size:1.15rem;color:var(--text);text-decoration:none;white-space:nowrap}
+.brand-m{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff}
+.brand b{font-weight:500;color:var(--accent)}
+.amp{display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;color:var(--text-2);white-space:nowrap}
+.amp i{width:10px;height:10px;border-radius:50%;flex:none;background:var(--grau);box-shadow:0 0 0 3px var(--grau-soft)}
+.amp-gruen i{background:var(--gruen);box-shadow:0 0 0 3px var(--gruen-soft)}
+.amp-gelb i{background:var(--gelb);box-shadow:0 0 0 3px var(--gelb-soft)}
+.amp-orange i{background:var(--orange);box-shadow:0 0 0 3px var(--orange-soft)}
+.amp-rot i{background:var(--rot);box-shadow:0 0 0 3px var(--rot-soft)}
+.amp-abh i{background:transparent;border:2px solid var(--gruen);box-shadow:none}
+.amp em{font-style:normal;color:var(--text-3)}
+.ort{display:inline-flex;align-items:center;gap:.4rem;font-size:.84rem;font-weight:500;padding:.22rem .6rem;border-radius:8px;white-space:nowrap}
+.ort-ch,.ort-eu{background:var(--gruen-soft);color:var(--gruen)}
+.ort-eub{background:var(--gelb-soft);color:var(--gelb)}
+.ort-unklar{background:var(--grau-soft);color:var(--text-2)}
+.ort-us,.ort-cn{background:var(--rot-soft);color:var(--rot)}
+.reg{font:600 .66rem var(--sans);letter-spacing:.04em;padding:.1rem .38rem;border-radius:5px;background:var(--bg-2);color:var(--text-2);border:1px solid var(--border)}
+.chip{display:inline-flex;align-items:center;gap:.3rem;font:500 .74rem var(--sans);padding:.16rem .55rem;border-radius:999px;white-space:nowrap}
+.chip-v{background:var(--blau-soft);color:var(--blau)}
+.chip-o{background:var(--grau-soft);color:var(--text-2)}
+.chip-f{background:var(--bg-2);color:var(--text-2);border:1px solid var(--border)}
+.chip-f svg{width:13px;height:13px;color:var(--text-3)}
+.kat{display:inline-flex;align-items:center;gap:.45rem;font-weight:600;font-size:.82rem;color:var(--accent-text)}
+.kat .ki{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent-soft);color:var(--accent-text)}
+.kat .ki svg{width:15px;height:15px}
+.kann{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+.kann>span.l{font-size:.74rem;color:var(--text-3);margin-right:.1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-weight:500;font-size:.92rem;padding:.55rem 1rem;border-radius:10px;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:var(--accent-hover)}
+.btn-g{background:var(--surface);border-color:var(--border-strong);color:var(--text)}.btn-g:hover{background:var(--bg-2)}
+.btn-t{background:none;color:var(--text-2);padding:.4rem .6rem}.btn-t:hover{background:var(--bg-2);color:var(--text)}
+.seg{display:inline-flex;background:var(--bg-2);border-radius:11px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:.38rem .8rem;border-radius:8px;cursor:pointer;font-size:.88rem;color:var(--text-2);white-space:nowrap;display:inline-flex;align-items:center;gap:.35rem}
+.seg button svg{width:15px;height:15px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:var(--shadow);font-weight:500}
+
+/* ---------- Detail (gemeinsam) ---------- */
+.det{max-width:760px}
+.det h1{font-size:clamp(1.7rem,4vw,2.35rem);margin:.5rem 0 .15rem}
+.det-anb{color:var(--text-3);margin-bottom:.9rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.det-was{background:var(--bg-2);border-radius:14px;padding:.9rem 1.1rem;display:grid;gap:.6rem}
+.det-was p{margin:0;color:var(--text-2);font-size:.95rem}
+.det section{margin-top:1.4rem}
+.det h2{font-size:1.18rem}
+.det-kurz{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.35rem;box-shadow:var(--shadow)}
+.det-kurz ul{list-style:none;margin:0 0 1rem;padding:0;display:flex;flex-direction:column;gap:.7rem}
+.det-kurz li{display:flex;gap:.7rem;align-items:flex-start;font-family:var(--serif);font-size:1.05rem;line-height:1.45}
+.ti{flex:none;display:grid;place-items:center;width:23px;height:23px;border-radius:50%;font:700 .78rem var(--sans);margin-top:.08rem}
+.ton-gut .ti{background:var(--gruen-soft);color:var(--gruen)}
+.ton-mittel .ti{background:var(--gelb-soft);color:var(--gelb)}
+.ton-schlecht .ti{background:var(--rot-soft);color:var(--rot)}
+.ton-offen .ti{background:var(--grau-soft);color:var(--text-2)}
+.det-amps{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.det-achtung{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:14px;padding:1rem 1.25rem}
+.det-achtung h2{color:var(--accent-text);font-size:1.05rem;margin-bottom:.3rem}
+.det-achtung p{margin:0}
+.det-fakten{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem}
+.fk{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.8rem .95rem}
+.fk span{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);font-weight:600;margin-bottom:.15rem}
+.fk b{font-weight:400;font-size:.92rem}
+.fk.offen b{color:var(--text-3);font-style:italic}
+.det-vischer{background:var(--blau-soft);border-radius:14px;padding:1rem 1.25rem}
+.det-vischer h2{color:var(--blau);font-size:1.05rem;margin-bottom:.3rem}
+.det-vischer p:last-child{margin:0}
+.acc{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:.5rem;overflow:hidden}
+.acc summary{cursor:pointer;padding:.85rem 1.1rem;font-weight:500;display:flex;align-items:center;gap:.6rem;list-style:none}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary>span:first-child{flex:1}
+.acc summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--text-3);border-bottom:2px solid var(--text-3);transform:rotate(45deg);transition:transform .2s}
+.acc[open] summary::after{transform:rotate(-135deg)}
+.acc summary:hover{background:var(--bg)}
+.acc dl{margin:0;padding:0 1.1rem .5rem}
+.acc .row{display:grid;grid-template-columns:38% 1fr;gap:1rem;padding:.7rem 0;border-top:1px solid var(--border)}
+.acc dt{font-weight:500;font-size:.88rem}
+.acc dt small{display:block;font-weight:400;color:var(--text-3);font-size:.78rem;line-height:1.4;margin-top:.1rem}
+.acc dd{margin:0;font-size:.9rem;overflow-wrap:anywhere}
+.acc ul.q{list-style:none;margin:0;padding:0 1.1rem .8rem}
+.acc ul.q li{padding:.45rem 0;border-top:1px solid var(--border);font-size:.88rem}
+.acc ul.q small{display:block;color:var(--text-3);font-size:.72rem;overflow-wrap:anywhere}
+
+/* ---------- Schublade (C + D) ---------- */
+.scrim{position:fixed;inset:0;background:rgba(20,20,19,.38);z-index:110;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:var(--bg);z-index:111;box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.dr-hd{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.7rem 1.1rem;border-bottom:1px solid var(--border);background:var(--surface)}
+.dr-bd{overflow-y:auto;padding:1.25rem 1.5rem 3rem}
+
+/* ============================================================
+   B – Berater
+   ============================================================ */
+.vb{min-height:calc(100vh - var(--sw));display:flex;flex-direction:column}
+.vb-top{display:flex;align-items:center;justify-content:space-between;padding:.75rem 20px;max-width:1240px;margin:0 auto;width:100%}
+.vb-main{flex:1;width:100%;max-width:800px;margin:0 auto;padding:1rem 20px 10rem}
+.vb-welcome{text-align:center;padding:3rem 0 .5rem}
+.vb-welcome .logo{width:52px;height:52px;border-radius:15px;background:var(--accent);color:#fff;display:inline-grid;place-items:center;margin-bottom:1.1rem}
+.vb-welcome h1{font-size:clamp(1.9rem,4.5vw,2.6rem);margin-bottom:.4rem}
+.vb-welcome p{color:var(--text-2);font-size:1.08rem;max-width:540px;margin:0 auto}
+.vb-trust{display:flex;justify-content:center;gap:1.25rem;flex-wrap:wrap;margin-top:1rem;font-size:.82rem;color:var(--text-3)}
+.vb-trust span{display:inline-flex;align-items:center;gap:.35rem}
+.vb-trust svg{width:15px;height:15px;color:var(--gruen)}
+.msg{display:flex;gap:.85rem;margin:1.6rem 0}
+.msg.neu{animation:auf .35s ease both}
+@keyframes auf{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg .av{flex:none;width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;margin-top:.1rem}
+.msg .bd{flex:1;min-width:0}
+.msg .tx{font-family:var(--serif);font-size:1.13rem;line-height:1.55}
+.msg .tx small{display:block;font-family:var(--sans);font-size:.85rem;color:var(--text-3);margin-top:.2rem}
+.prog{display:flex;align-items:center;gap:.35rem;font:500 .72rem var(--sans);color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.prog i{width:18px;height:4px;border-radius:2px;background:var(--bg-3)}
+.prog i.on{background:var(--accent)}
+.msg.user{justify-content:flex-end}
+.msg.user .bub{display:inline-flex;align-items:center;gap:.45rem;background:var(--bg-3);border-radius:18px 18px 4px 18px;padding:.55rem .95rem;max-width:85%;cursor:pointer;border:0;text-align:left;font-size:.97rem}
+.msg.user .bub svg{width:16px;height:16px;color:var(--accent-text)}
+.msg.user .bub small{font-size:.72rem;color:var(--text-3);margin-left:.35rem}
+.msg.user .bub:hover small{color:var(--accent-text)}
+.vb-opts{display:grid;gap:.5rem;margin-top:.9rem}
+.vb-opts.g2{grid-template-columns:repeat(2,1fr)}
+.vb-opts button{display:flex;align-items:center;gap:.85rem;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.85rem 1rem;cursor:pointer;transition:all .15s;box-shadow:var(--shadow)}
+.vb-opts button:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.vb-opts .ic{flex:none;width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center}
+.vb-opts .tt{flex:1;min-width:0}
+.vb-opts strong{display:block;font-weight:600;font-size:.96rem;line-height:1.3}
+.vb-opts small{color:var(--text-3);font-size:.82rem;line-height:1.35;display:block;margin-top:.1rem}
+.vb-opts .n{font-size:.75rem;color:var(--text-3);white-space:nowrap}
+.vb-recs{display:grid;gap:1rem;margin-top:1rem}
+.vb-rec{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.vb-rec .top{padding:1.15rem 1.3rem 1rem;display:grid;gap:.6rem}
+.vb-rec .hd{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.vb-rec .rank{display:inline-flex;align-items:center;gap:.35rem;font:600 .72rem var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-left:auto}
+.vb-rec .rank b{width:22px;height:22px;border-radius:50%;background:var(--text);color:var(--bg);display:grid;place-items:center;font-size:.75rem}
+.vb-rec h3{font-size:1.32rem;margin:0}
+.vb-rec .an{font-size:.86rem;color:var(--text-3);margin-top:-.4rem}
+.vb-rec ul{list-style:none;padding:0;margin:0;display:grid;gap:.42rem}
+.vb-rec li{display:flex;gap:.6rem;font-size:.93rem;color:var(--text-2);align-items:flex-start}
+.vb-rec li .ti{width:20px;height:20px;font-size:.7rem}
+.vb-rec .ft{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;padding:.8rem 1.3rem;background:var(--bg);border-top:1px solid var(--border)}
+.vb-rec .ft .amps{display:flex;gap:1.1rem;flex-wrap:wrap;align-items:center}
+.vb-tip{background:var(--gelb-soft);border-radius:14px;padding:.85rem 1.1rem;font-size:.92rem;margin-top:1rem}
+.vb-cmp{margin-top:1rem;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow-x:auto}
+.vb-cmp table{border-collapse:collapse;width:100%;font-size:.87rem;min-width:560px}
+.vb-cmp th,.vb-cmp td{padding:.6rem .85rem;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+.vb-cmp thead th{font-family:var(--serif);font-weight:500;font-size:.98rem;background:var(--bg)}
+.vb-cmp tbody th{font-weight:500;color:var(--text-3);width:24%;font-size:.82rem}
+.vb-cmp tr:last-child td,.vb-cmp tr:last-child th{border-bottom:0}
+.vb-us{margin-top:.9rem;display:grid;gap:.5rem}
+.vb-us button{display:grid;grid-template-columns:1fr auto;gap:.2rem 1rem;align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.75rem 1rem;cursor:pointer}
+.vb-us button:hover{border-color:var(--border-strong)}
+.vb-us .nm{font-weight:500}
+.vb-us .vd{grid-column:1/-1;font-size:.84rem;color:var(--text-2)}
+.vb-list{margin-top:.9rem;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface)}
+.vb-list button{display:grid;grid-template-columns:1fr auto;gap:.3rem 1rem;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--border);padding:.8rem 1.1rem;cursor:pointer;align-items:center}
+.vb-list button:first-child{border-top:0}
+.vb-list button:hover{background:var(--bg)}
+.vb-list .nm{font-weight:500;display:block}
+.vb-list .an{font-size:.8rem;color:var(--text-3)}
+.vb-list .rt{display:flex;flex-direction:column;align-items:flex-end;gap:.3rem}
+.vb-comp{position:fixed;left:0;right:0;bottom:0;padding:0 20px 1rem;background:linear-gradient(transparent,var(--bg) 35%);z-index:20}
+.vb-comp-in{max-width:760px;margin:0 auto;position:relative}
+.vb-box{background:var(--surface);border:1px solid var(--border-strong);border-radius:20px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:.5rem;padding:.55rem .55rem .55rem 1.1rem}
+.vb-box input{flex:1;border:0;background:none;font:inherit;font-size:1rem;color:var(--text);outline:none;padding:.45rem 0;min-width:0}
+.vb-box .send{width:36px;height:36px;border-radius:11px;border:0;background:var(--accent);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.vb-sugg{position:absolute;bottom:calc(100% + .4rem);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);max-height:50vh;overflow-y:auto}
+.vb-sugg button{display:flex;justify-content:space-between;align-items:center;gap:1rem;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--border);padding:.65rem 1rem;cursor:pointer;font-size:.92rem}
+.vb-sugg button:first-child{border-top:0}
+.vb-sugg button:hover{background:var(--bg)}
+.vb-note{text-align:center;font-size:.75rem;color:var(--text-3);margin-top:.45rem}
+
+/* ============================================================
+   C – Verzeichnis
+   ============================================================ */
+.vc-top{background:var(--bg);border-bottom:1px solid var(--border)}
+.vc-top-in{max-width:1320px;margin:0 auto;padding:.75rem 20px;display:flex;align-items:center;gap:1.25rem}
+.vc-search{flex:1;max-width:560px;display:flex;align-items:center;gap:.5rem;background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;padding:0 .85rem}
+.vc-search svg{width:17px;height:17px;color:var(--text-3)}
+.vc-search input{border:0;background:none;font:inherit;font-size:.95rem;color:var(--text);padding:.6rem 0;width:100%;outline:none}
+.vc-wrap{max-width:1320px;margin:0 auto;padding:2rem 20px 4rem}
+.vc-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:2.5rem;align-items:end;margin-bottom:1.75rem}
+.vc-hero h1{font-size:clamp(1.8rem,3.6vw,2.6rem);margin:0 0 .4rem}
+.vc-hero p{color:var(--text-2);margin:0;font-size:1.03rem}
+.vc-dist h3{font-family:var(--sans);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);font-weight:600;margin:0 0 .5rem;display:flex;justify-content:space-between}
+.vc-bar{display:flex;height:46px;border-radius:12px;overflow:hidden;gap:3px}
+.vc-bar button{border:0;cursor:pointer;color:#fff;font:600 .95rem var(--sans);display:flex;align-items:center;justify-content:center;transition:filter .15s,opacity .15s;min-width:34px}
+.vc-bar button:hover{filter:brightness(1.08)}
+.vc-bar.sel button{opacity:.35}
+.vc-bar.sel button[aria-pressed="true"]{opacity:1}
+.vc-bar .s-ch{background:#2f8a57}.vc-bar .s-eu{background:#5aa978}.vc-bar .s-eub{background:#c9962a}.vc-bar .s-rest{background:#c0392b}
+.vc-bar-l{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;margin-top:.6rem;font-size:.8rem;color:var(--text-2)}
+.vc-bar-l span{display:inline-flex;align-items:center;gap:.4rem;white-space:nowrap}
+.vc-bar-l b{font-weight:600;color:var(--text)}
+.vc-bar-l i{width:10px;height:10px;border-radius:3px}
+.vc-bar-l .s-ch{background:#2f8a57}.vc-bar-l .s-eu{background:#5aa978}.vc-bar-l .s-eub{background:#c9962a}.vc-bar-l .s-rest{background:#c0392b}
+.vc-tools{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:.9rem 1rem;display:grid;gap:.8rem;box-shadow:var(--shadow)}
+.vc-tr{display:flex;align-items:center;gap:.75rem 1rem;flex-wrap:wrap}
+.vc-tr>.lb{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);font-weight:600;min-width:84px}
+.vc-chips{display:flex;gap:.4rem;flex-wrap:wrap;flex:1}
+.fchip{display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--border-strong);background:var(--bg);border-radius:999px;padding:.32rem .75rem;font-size:.85rem;cursor:pointer;color:var(--text-2)}
+.fchip svg{width:14px;height:14px;color:var(--text-3)}
+.fchip em{font-style:normal;font-size:.72rem;color:var(--text-3)}
+.fchip:hover{border-color:var(--text-3)}
+.fchip[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:var(--bg)}
+.fchip[aria-pressed="true"] svg,.fchip[aria-pressed="true"] em{color:var(--bg-3)}
+.vc-res{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:1.75rem 0 1rem}
+.vc-res h2{margin:0;font-size:1.35rem}
+.vc-res h2 span{font:400 .9rem var(--sans);color:var(--text-3);margin-left:.35rem}
+.vc-res .r{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.vc-sel{font:inherit;font-size:.88rem;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;padding:.42rem .6rem;color:var(--text)}
+.vc-grp{margin-top:2.25rem}
+.vc-grp:first-of-type{margin-top:0}
+.vc-gh{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.vc-gh .ki{width:36px;height:36px;border-radius:11px;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center}
+.vc-gh h3{margin:0;font-size:1.2rem}
+.vc-gh p{margin:0;font-size:.85rem;color:var(--text-3)}
+.vc-gh .n{margin-left:auto;font-size:.82rem;color:var(--text-3)}
+.vc-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.9rem}
+.vc-card{display:flex;flex-direction:column;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:box-shadow .2s,transform .2s,border-color .2s;overflow:hidden;padding:0}
+.vc-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--border-strong)}
+.vc-card .in{padding:1rem 1.1rem .9rem;display:flex;flex-direction:column;gap:.55rem;flex:1;width:100%}
+.vc-card .hd{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.vc-card h4{font-family:var(--serif);font-weight:500;font-size:1.13rem;line-height:1.25;margin:.1rem 0 0}
+.vc-card .an{font-size:.8rem;color:var(--text-3);display:flex;gap:.4rem;align-items:center;margin-top:-.3rem}
+.vc-card .ds{font-size:.85rem;color:var(--text-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0}
+.vc-card .kann{margin-top:auto;padding-top:.15rem}
+.profil{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);background:var(--bg);width:100%}
+.profil>div{padding:.55rem .75rem;border-left:1px solid var(--border);position:relative;min-width:0}
+.profil>div:first-child{border-left:0}
+.profil>div::before{content:"";position:absolute;left:0;right:0;top:-1px;height:3px;background:var(--grau)}
+.profil .p-gruen::before{background:var(--gruen)}.profil .p-gelb::before{background:var(--gelb)}.profil .p-orange::before{background:var(--orange)}
+.profil .p-rot::before{background:var(--rot)}.profil .p-abh::before{background:var(--gruen);opacity:.5}
+.profil span{display:block;font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);font-weight:600}
+.profil b{display:block;font-weight:500;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vc-tbl{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.vc-head,.vc-row{display:grid;grid-template-columns:minmax(230px,2fr) minmax(200px,1.6fr) 1fr 1fr 1fr;gap:1rem;align-items:center;padding:.75rem 1.1rem}
+.vc-head{background:var(--bg);border-bottom:1px solid var(--border);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);font-weight:600}
+.vc-head button{background:none;border:0;padding:0;font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;text-align:left}
+.vc-head button[data-on]{color:var(--accent-text)}
+.vc-row{border:0;border-top:1px solid var(--border);cursor:pointer;width:100%;background:none;text-align:left;font-size:.9rem}
+.vc-row:first-of-type{border-top:0}
+.vc-row:hover{background:var(--bg)}
+.vc-row .nm{font-weight:500;display:block}
+.vc-row .an{display:block;font-size:.78rem;color:var(--text-3)}
+.vc-row .kt{display:grid;gap:.3rem;justify-items:start}
+.vc-row .amp em{display:none}
+.vc-empty{padding:3rem 1rem;text-align:center;color:var(--text-2);background:var(--surface);border:1px dashed var(--border-strong);border-radius:16px}
+
+/* ============================================================
+   D – Marktlandkarte
+   ============================================================ */
+.vd-wrap{max-width:1400px;margin:0 auto;padding:1.75rem 20px 4rem}
+.vd-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.vd-hero h1{font-size:clamp(1.8rem,3.6vw,2.6rem);margin:0 0 .35rem}
+.vd-hero p{margin:0;color:var(--text-2);max-width:680px}
+.vd-ctl{display:flex;gap:.75rem 1.25rem;align-items:center;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:.7rem .9rem;margin-bottom:.9rem;box-shadow:var(--shadow)}
+.vd-ctl .lb{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);font-weight:600}
+.vd-ctl .grp{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.vd-find{display:flex;align-items:center;gap:.45rem;background:var(--bg);border:1px solid var(--border-strong);border-radius:10px;padding:0 .7rem;flex:1;min-width:200px;max-width:340px;margin-left:auto}
+.vd-find svg{width:16px;height:16px;color:var(--text-3)}
+.vd-find input{border:0;background:none;font:inherit;font-size:.9rem;padding:.42rem 0;color:var(--text);width:100%;outline:none}
+.vd-leg{display:flex;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:var(--text-2);margin:0 0 1rem .2rem}
+.vd-map{display:grid;grid-template-columns:220px repeat(5,minmax(0,1fr));border:1px solid var(--border);border-radius:18px;background:var(--surface)}
+.vd-ch{padding:.85rem .8rem;background:var(--bg);border-bottom:1px solid var(--border);border-left:1px solid var(--border);position:sticky;top:var(--sw);z-index:3}
+.vd-ch:first-child{border-left:0;border-top-left-radius:18px}
+.vd-ch:nth-child(6){border-top-right-radius:18px}
+.vd-ch b{display:block;font-size:.9rem;font-weight:600}
+.vd-ch span{font-size:.75rem;color:var(--text-3);line-height:1.3;display:block}
+.vd-ch .bar{height:3px;border-radius:2px;margin-bottom:.5rem;width:36px;background:var(--grau)}
+.vd-ch.c-ch .bar,.vd-ch.c-eu .bar{background:var(--gruen)}.vd-ch.c-eub .bar{background:var(--gelb)}.vd-ch.c-us .bar{background:var(--rot)}
+.vd-ch.gut{background:color-mix(in srgb,var(--gruen-soft) 55%,var(--bg))}
+.vd-rh{padding:.9rem .9rem;border-top:1px solid var(--border);display:flex;gap:.65rem;align-items:flex-start}
+.vd-rh .ki{width:32px;height:32px;border-radius:10px;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center;flex:none}
+.vd-rh .ki svg{width:17px;height:17px}
+.vd-rh b{display:block;font-family:var(--serif);font-weight:500;font-size:1.02rem;line-height:1.25}
+.vd-rh span{display:block;font-size:.76rem;color:var(--text-3);line-height:1.35;margin-top:.15rem}
+.vd-rh em{font-style:normal;font-size:.72rem;color:var(--text-3)}
+.vd-cell{padding:.6rem;border-top:1px solid var(--border);border-left:1px solid var(--border);display:flex;flex-wrap:wrap;gap:.3rem;align-content:flex-start;min-height:64px}
+.vd-cell.gut{background:color-mix(in srgb,var(--gruen-soft) 28%,transparent)}
+.vd-cell .leer{color:var(--border-strong);font-size:.85rem;padding:.2rem .3rem}
+.pill{display:inline-flex;align-items:center;gap:.35rem;max-width:100%;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:.22rem .5rem .22rem .4rem;font-size:.76rem;line-height:1.25;cursor:pointer;color:var(--text);text-align:left;transition:transform .12s,box-shadow .12s,opacity .15s}
+.pill:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg);z-index:2;position:relative}
+.pill i{width:8px;height:8px;border-radius:50%;flex:none;background:var(--grau)}
+.pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill.a-gruen{background:var(--gruen-soft);border-color:color-mix(in srgb,var(--gruen) 30%,transparent)}.pill.a-gruen i{background:var(--gruen)}
+.pill.a-gelb{background:var(--gelb-soft);border-color:color-mix(in srgb,var(--gelb) 30%,transparent)}.pill.a-gelb i{background:var(--gelb)}
+.pill.a-orange{background:var(--orange-soft);border-color:color-mix(in srgb,var(--orange) 30%,transparent)}.pill.a-orange i{background:var(--orange)}
+.pill.a-rot{background:var(--rot-soft);border-color:color-mix(in srgb,var(--rot) 30%,transparent)}.pill.a-rot i{background:var(--rot)}
+.pill.a-abh i{background:transparent;border:2px solid var(--gruen)}
+.pill.dim{opacity:.18}
+.pill.hit{box-shadow:0 0 0 2px var(--accent)}
+.vd-note{margin-top:.9rem;font-size:.82rem;color:var(--text-3)}
+.vd-insights{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:1.25rem}
+.vd-ins{background:var(--bg-2);border-radius:14px;padding:1rem 1.1rem}
+.vd-ins b{display:block;font-family:var(--serif);font-weight:500;font-size:1.05rem;margin-bottom:.25rem}
+.vd-ins p{margin:0;font-size:.88rem;color:var(--text-2)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1000px){
+  .vc-hero{grid-template-columns:1fr;gap:1.25rem}
+  .vc-head{display:none}
+  .vc-row{grid-template-columns:1fr;gap:.45rem}
+  .vc-row .amp em{display:inline}
+  .vd-map{display:block;border:0;background:none}
+  .vd-ch{display:none}
+  .vd-rh{background:var(--surface);border:1px solid var(--border);border-radius:14px 14px 0 0;margin-top:1rem}
+  .vd-cell{border:1px solid var(--border);border-top:0;background:var(--surface);min-height:0}
+  .vd-cell::before{content:attr(data-col);display:block;width:100%;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);font-weight:600;margin-bottom:.15rem}
+  .vd-cell.leerzelle{display:none}
+  .vd-insights{grid-template-columns:1fr}
+}
+@media (max-width:700px){
+  .vb-main,.vc-wrap,.vd-wrap{padding-left:16px;padding-right:16px}
+  .vb-opts.g2{grid-template-columns:1fr}
+  .det-fakten{grid-template-columns:1fr}
+  .acc .row{grid-template-columns:1fr;gap:.2rem}
+  .vc-top-in{flex-wrap:wrap}.vc-search{max-width:none;flex-basis:100%}
+  .sw-desc{display:none}.switcher strong{display:none}
+  .vc-tr>.lb{min-width:0;flex-basis:100%}
+  .vd-find{margin-left:0;max-width:none}
+  .vb-cmp table{min-width:480px}
+}
+</style>
+</head>
+<body>
+
+<div class="switcher" role="region" aria-label="Design-Auswahl">
+  <div class="switcher-in">
+    <strong>Design-Auswahl</strong>
+    <div class="sw-tabs" role="group">
+      <button data-v="b">B · Berater</button>
+      <button data-v="c">C · Verzeichnis</button>
+      <button data-v="d">D · Marktlandkarte</button>
+    </div>
+    <span class="sw-desc" id="sw-desc"></span>
+    <button class="sw-theme" id="sw-theme" title="Hell/Dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</div>
+
+<div id="vb" class="vb" hidden></div>
+<div id="vc" hidden></div>
+<div id="vd" hidden></div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+<script>
+const RAW = /*__DATA__*/null;
+</script>
+<script>
+"use strict";
+/* ============================================================
+   Icons
+   ============================================================ */
+const ICO = p => `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const IC = {
+  doc:ICO('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+  users:ICO('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3 3-4.8 5.5-4.8s4.9 1.8 5.5 4.8"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14.4c1.6.6 2.7 2.2 3 4.6"/>'),
+  lock:ICO('<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>'),
+  ch:ICO('<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M12 7.5v9M7.5 12h9" stroke-width="2.6"/>'),
+  eu:ICO('<circle cx="12" cy="12" r="8.5"/><path d="M12 6.5v.01M12 17.5v.01M6.5 12h.01M17.5 12h.01M8.1 8.1h.01M15.9 15.9h.01M8.1 15.9h.01M15.9 8.1h.01" stroke-width="2.6"/>'),
+  globe:ICO('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.6 5.4 3.6 8.5s-1.1 5.9-3.6 8.5c-2.5-2.6-3.6-5.4-3.6-8.5S9.5 6.1 12 3.5z"/>'),
+  chat:ICO('<path d="M20 12a7.5 7.5 0 0 1-11 6.6L4 20l1.4-4.6A7.5 7.5 0 1 1 20 12z"/>'),
+  layers:ICO('<path d="M12 3.5 3.5 8 12 12.5 20.5 8z"/><path d="M3.5 12 12 16.5 20.5 12M3.5 16 12 20.5 20.5 16"/>'),
+  tool:ICO('<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5a4 4 0 0 0-2-2z"/><path d="M4 20l3-3"/>'),
+  code:ICO('<path d="M8.5 8 4.5 12l4 4M15.5 8l4 4-4 4M13.5 5.5l-3 13"/>'),
+  server:ICO('<rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01" stroke-width="2.6"/>'),
+  spark:ICO('<path d="M12 3.5v4M12 16.5v4M3.5 12h4M16.5 12h4M6 6l2.6 2.6M15.4 15.4 18 18M6 18l2.6-2.6M15.4 8.6 18 6"/>'),
+  db:ICO('<ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/>'),
+  route:ICO('<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 18h8M6 16V9a3 3 0 0 1 3-3h7"/>'),
+  mic:ICO('<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v3"/>'),
+  lang:ICO('<path d="M4 6h9M8.5 4v2c0 4-2 7-4.5 8.5M6.5 10c1 2 3 3.6 5 4.5"/><path d="M13 20l3.5-8 3.5 8M14.2 17.5h4.6"/>'),
+  scan:ICO('<path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M8 9h8M8 12h8M8 15h5"/>'),
+  search:ICO('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>'),
+  office:ICO('<rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m3.5 7.5 8.5 6 8.5-6"/>'),
+  agent:ICO('<rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9.5 13h.01M14.5 13h.01" stroke-width="2.2"/><path d="M3 13v2M21 13v2"/>'),
+  brief:ICO('<rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17"/>'),
+  model:ICO('<path d="M12 3.5 20 8v8l-8 4.5L4 16V8z"/><path d="M4 8l8 4.5L20 8M12 12.5v8"/>'),
+  check:ICO('<path d="m5 12.5 4.5 4.5L19 7.5"/>'),
+  x:ICO('<path d="M6 6l12 12M18 6 6 18"/>'),
+  grid:ICO('<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'),
+  list:ICO('<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" stroke-width="2"/>'),
+};
+const SHIELD = s => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><path d="M12 3v3M12 9.5v5M12 18v3M4 12h15M15.5 8.5 19 12l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>`;
+const PIN = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></svg>';
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ============================================================
+   Daten & einfache Sprache
+   ============================================================ */
+const L = RAW.meta.felder;
+const DH = {
+  ch:{label:"Schweiz",kurz:"Daten können in der Schweiz bleiben",rang:0,ton:"gut",satz:"Ihre Daten können vollständig in der Schweiz gespeichert und verarbeitet werden."},
+  eu:{label:"Europa",kurz:"Daten können in Europa bleiben",rang:1,ton:"gut",satz:"Ihre Daten können in Europa (EU/EWR inkl. Schweiz) bleiben – meist muss dafür die richtige Region oder Einstellung gewählt werden."},
+  eub:{label:"Europa, mit Ausnahmen",kurz:"Grösstenteils in Europa",rang:2,ton:"mittel",satz:"Ihre Daten bleiben grösstenteils in Europa, aber einzelne Funktionen (z.B. Websuche oder bestimmte Modelle) können Daten ausserhalb verarbeiten."},
+  unklar:{label:"Noch unklar",kurz:"Datenort noch unklar",rang:3,ton:"offen",satz:"Wo Ihre Daten verarbeitet werden, ist öffentlich nicht eindeutig dokumentiert – bitte beim Anbieter nachfragen."},
+  us:{label:"USA / weltweit",kurz:"Daten gehen in die USA / weltweit",rang:4,ton:"schlecht",satz:"Ihre Daten werden in den USA oder weltweit verarbeitet. Eine Beschränkung auf die Schweiz oder Europa ist nicht möglich."},
+  cn:{label:"China",kurz:"Daten gehen nach China",rang:5,ton:"schlecht",satz:"Ihre Daten werden in China verarbeitet. Für Firmendaten nicht zu empfehlen."},
+};
+function dhKey(v){v=(v||"").toLowerCase().trim();
+  if(v.includes("china"))return"cn"; if(v==="ch"||v.startsWith("ch ")||v.startsWith("schweiz"))return"ch";
+  if(v.includes("bedingt"))return"eub"; if(v.startsWith("eu"))return"eu"; if(v.includes("usa")||v.includes("global"))return"us"; return"unklar";}
+const AMP = {gruen:{l:"Geeignet",r:0,ton:"gut"},gelb:{l:"Mit Vorkehrungen",r:1,ton:"mittel"},orange:{l:"Eingeschränkt",r:2,ton:"mittel"},
+  rot:{l:"Nicht geeignet",r:3,ton:"schlecht"},abh:{l:"Je nach Betrieb",r:1,ton:"offen"},offen:{l:"Noch nicht beurteilt",r:4,ton:"offen"}};
+const AMP_SATZ = {
+  pd:{gruen:"Für Kunden- und Personendaten gut geeignet.",gelb:"Für Kunden- und Personendaten geeignet, wenn Vertrag (AVV) und Einstellungen stimmen.",
+      orange:"Für Kunden- und Personendaten nur eingeschränkt geeignet.",rot:"Nicht für Kunden- oder Personendaten verwenden.",
+      abh:"Ob Personendaten erlaubt sind, hängt davon ab, wo und wie Sie das Tool betreiben.",offen:"Für Personendaten noch nicht beurteilt."},
+  bg:{gruen:"Auch für Berufsgeheimnisse (Anwalt, Arzt, Treuhand) geeignet.",gelb:"Für Berufsgeheimnisse nur mit Zusatzvereinbarung und richtigen Einstellungen.",
+      orange:"Für Berufsgeheimnisse nur eingeschränkt – Zusatz muss verhandelt werden.",rot:"Nicht für Berufsgeheimnisse verwenden.",
+      abh:"Ob Berufsgeheimnisse erlaubt sind, hängt vom Betrieb ab (z.B. eigene Server).",offen:"Für Berufsgeheimnisse noch nicht beurteilt – vor dem Einsatz klären."}};
+function amp(v){const s=(v||"").trim(),l=s.toLowerCase();
+  const k=l.startsWith("grün")?"gruen":l.startsWith("gelb")?"gelb":l.startsWith("orange")?"orange":l.startsWith("rot")?"rot":l.startsWith("abh")?"abh":"offen";
+  const m=s.match(/\(([^)]*)\)/);return{k,l:AMP[k].l,r:AMP[k].r,ton:AMP[k].ton,bed:m?m[1]:"",raw:s};}
+const isOffen = v => typeof v==="string" && /^(prüfen|offen|unklar)/i.test(v.trim());
+const jn = v => {const s=(v||"").trim().toLowerCase();return s.startsWith("ja")?"ja":s.startsWith("nein")?"nein":isOffen(v)?"offen":"teils";};
+
+/* Hauptkategorie in Alltagssprache */
+const KAT = {
+  "Chat-Assistent":{l:"KI-Assistent",ic:"chat",d:"Ein KI-Chat für Mitarbeitende – zum Schreiben, Zusammenfassen und Fragen, ähnlich wie ChatGPT."},
+  "Enterprise-KI-Plattform":{l:"KI-Plattform fürs Unternehmen",ic:"layers",d:"Eine Plattform für das ganze Unternehmen: KI-Chat, eigene Wissensdatenbanken und Assistenten an einem Ort."},
+  "Office-Add-in":{l:"Office-Erweiterung",ic:"office",d:"Bringt KI direkt in Word, Outlook & Co."},
+  "RAG-/Wissensplattform":{l:"Wissensplattform",ic:"doc",d:"Lässt eine KI in Ihren eigenen Dokumenten suchen und darauf antworten."},
+  "Inferenz-API":{l:"KI-Modelle per API",ic:"code",d:"KI-Modelle zum Einbauen in eigene Software – für Entwickler und IT."},
+  "Modell (Open-Weight)":{l:"Offenes KI-Modell",ic:"model",d:"Ein frei verfügbares KI-Modell, das Sie selbst oder über einen Hoster betreiben können."},
+  "LLM-Gateway":{l:"Modell-Router",ic:"route",d:"Leitet Anfragen an verschiedene KI-Modelle weiter und kontrolliert, wohin Daten fliessen."},
+  "Vektordatenbank (RAG)":{l:"Vektordatenbank",ic:"db",d:"Speichert Dokumente so, dass eine KI darin suchen kann – ein Baustein für Wissensdatenbanken."},
+  "Embeddings/Reranking":{l:"Such-Baustein (Embeddings)",ic:"search",d:"Baustein, mit dem eine KI Inhalte in eigenen Dokumenten findet."},
+  "Übersetzung":{l:"Übersetzung",ic:"lang",d:"Übersetzt Texte und Dokumente mit KI."},
+  "Transkription/Sprache":{l:"Diktat & Transkription",ic:"mic",d:"Wandelt Sprache in Text um – zum Diktieren oder für Protokolle."},
+  "Dokumentenverarbeitung (IDP)":{l:"Dokumente auslesen",ic:"scan",d:"Liest Rechnungen, Formulare und Dokumente automatisch aus und ordnet sie zu."},
+  "Vertikal: Legal":{l:"Branchenlösung Recht",ic:"brief",d:"KI speziell für Kanzleien und Rechtsabteilungen."},
+  "Vertikal: Finanz":{l:"Branchenlösung Finanz",ic:"brief",d:"KI speziell für Banken, Vermögensverwalter und Versicherer."},
+  "GPU/Infrastruktur":{l:"GPU-Server",ic:"server",d:"Rechenleistung, um KI-Modelle selbst zu betreiben."},
+  "On-Prem-Appliance":{l:"KI-Server vor Ort",ic:"server",d:"Fertige Hardware mit KI-Software für Ihr eigenes Rechenzentrum."},
+};
+const katInfo = k => KAT[k] || {l:k||"Weitere",ic:"spark",d:""};
+
+/* Funktionen: was ein Tool zusätzlich kann (aus der Beschreibung abgeleitet) */
+const FUNK = [
+  {k:"chat",l:"Chat",ic:"chat",t:(x,r)=>/\bchat|assistent|workspace|copilot|vibe|lumo|chatgpt|claude (free|team)|gemini (apps|enterprise|in google)/i.test(x)||["Chat-Assistent","Enterprise-KI-Plattform"].includes(r.kategorie)},
+  {k:"wissen",l:"Eigene Dokumente",ic:"doc",t:x=>/\brag\b|\(rag\)|wissensbas|knowledge|dokumenten-assist|libraries|graph-zugriff|enterprise-suche|kanzlei-dokumente|wissensplattform/i.test(x)},
+  {k:"agent",l:"Agenten & Workflows",ic:"agent",t:x=>/agent|workflow|automation|n8n|dify/i.test(x)},
+  {k:"office",l:"Office & E-Mail",ic:"office",t:x=>/\bword\b|excel|outlook|office|m365|google workspace|ksuite|mail/i.test(x)},
+  {k:"code",l:"Programmieren",ic:"code",t:x=>/\bcode\b/i.test(x)},
+  {k:"api",l:"API",ic:"code",t:(x,r)=>/\bapi\b/i.test(r.deployment)||/\bapi\b|openai-kompatib|endpoint/i.test(r.subkategorie+" "+r.name)||["Inferenz-API","LLM-Gateway"].includes(r.kategorie)},
+  {k:"router",l:"Modell-Router",ic:"route",t:x=>/gateway|routing|router/i.test(x)},
+  {k:"vektor",l:"Vektordatenbank",ic:"db",t:x=>/vektor|milvus|vector/i.test(x)},
+  {k:"embed",l:"Embeddings",ic:"search",t:x=>/embed|rerank/i.test(x)},
+  {k:"uebers",l:"Übersetzung",ic:"lang",t:x=>/übersetz/i.test(x)},
+  {k:"sprache",l:"Diktat & Transkription",ic:"mic",t:x=>/diktat|transkri|speech|whisper/i.test(x)},
+  {k:"ocr",l:"Dokumente auslesen",ic:"scan",t:x=>/\bocr\b|\bidp\b|extraktion|dokumentverarbeitung|klassifikation/i.test(x)},
+  {k:"gpu",l:"GPU-Leistung",ic:"server",t:(x,r)=>r.kategorie==="GPU/Infrastruktur"||/gpu/i.test(r.subkategorie)},
+  {k:"onprem",l:"Eigene Server möglich",ic:"server",t:(x,r)=>jn(r.on_prem_moeglich)==="ja"},
+];
+const FUNK_BY = Object.fromEntries(FUNK.map(f=>[f.k,f]));
+const HAUPT_FUNK = {"Chat-Assistent":"chat","Enterprise-KI-Plattform":"chat","Inferenz-API":"api","LLM-Gateway":"router","Vektordatenbank (RAG)":"vektor",
+  "Embeddings/Reranking":"embed","Übersetzung":"uebers","Transkription/Sprache":"sprache","Dokumentenverarbeitung (IDP)":"ocr","GPU/Infrastruktur":"gpu","On-Prem-Appliance":"onprem","RAG-/Wissensplattform":"wissen"};
+
+/* Gruppen für Verzeichnis (C) und Landkarte (D) */
+const ZEILEN = [
+  {id:"assistent",l:"KI-Assistenten",s:"Chatten, schreiben, zusammenfassen",ic:"chat",kat:["Chat-Assistent","Office-Add-in"]},
+  {id:"plattform",l:"KI-Plattformen fürs Unternehmen",s:"Chat, Wissensdatenbank und Assistenten an einem Ort",ic:"layers",kat:["Enterprise-KI-Plattform","RAG-/Wissensplattform"]},
+  {id:"branche",l:"Branchenlösungen",s:"Recht und Finanz",ic:"brief",kat:["Vertikal: Legal","Vertikal: Finanz"]},
+  {id:"spezial",l:"Übersetzen, Diktieren, Dokumente",s:"Spezialisierte Werkzeuge",ic:"tool",kat:["Übersetzung","Transkription/Sprache","Dokumentenverarbeitung (IDP)"]},
+  {id:"api",l:"KI-Modelle per API",s:"Für Entwickler und IT",ic:"code",kat:["Inferenz-API","Modell (Open-Weight)"]},
+  {id:"bausteine",l:"Router & Datenbanken",s:"Bausteine für eigene KI-Lösungen",ic:"db",kat:["LLM-Gateway","Vektordatenbank (RAG)","Embeddings/Reranking"]},
+  {id:"infra",l:"Eigene Server",s:"GPU-Server und Hardware vor Ort",ic:"server",kat:["GPU/Infrastruktur","On-Prem-Appliance"]},
+];
+const zeileVon = k => (ZEILEN.find(z=>z.kat.includes(k))||{id:"weitere"}).id;
+const REG = {"Schweiz":"CH","EU/EWR":"EU","USA":"US","Kanada":"CA","China":"CN","International":"INT"};
+
+const GRUPPEN = [
+  {t:"Wo sind meine Daten?",f:[["speicherort_daten","Wo Chats, Dateien und Einstellungen gespeichert werden."],["inferenz_ort","Wo die KI Ihre Anfrage tatsächlich berechnet."],
+    ["ch_only_moeglich","Lässt sich alles auf die Schweiz beschränken?"],["eu_ewr_ch_only_moeglich","Lässt sich alles auf Europa (inkl. Schweiz) beschränken?"],
+    ["hq_land","Hauptsitz des Anbieters."],["mutter_jurisdiktion","Welchem Recht der Mutterkonzern untersteht."],["us_cloud_act","Können US-Behörden Zugriff verlangen – auch in europäischen Rechenzentren?"]]},
+  {t:"Vertrag & Datenschutz",f:[["dpa_avv","Auftragsverarbeitungsvertrag – Pflicht bei Personendaten."],["training_kundendaten","Werden Ihre Eingaben zum Trainieren der KI genutzt?"],
+    ["retention_zdr","Wie lange Anfragen gespeichert werden und wer sie sehen kann."],["websuche_hinweis","Bei der Websuche gehen Fragen oft an Dritte – häufig ohne Vertrag."],
+    ["berufsgeheimnis","Eignung für Berufs- oder Amtsgeheimnisse (Art. 320/321 StGB)."],["zertifizierungen","Sicherheits-Zertifikate wie ISO 27001."]]},
+  {t:"Technik & Modelle",f:[["kategorie","Art des Angebots."],["subkategorie","Was das Tool genau macht."],["deployment","Wie das Tool betrieben wird."],
+    ["on_prem_moeglich","Kann es auf eigenen Servern laufen?"],["modelle","Verfügbare KI-Modelle."],["modell_typ","Offene oder geschlossene Modelle."],
+    ["open_weight","Modelle frei verfügbar und selbst betreibbar?"],["openai_kompatibel","Einfacher Wechsel von OpenAI-Software?"]]},
+  {t:"Preis & Zielgruppe",f:[["preis","Öffentlich bekannte Preise."],["zielgruppe","Für wen das Angebot gedacht ist."],["anbieter","Vollständiger Firmenname."]]},
+];
+
+const TOOLS = RAW.eintraege.map(r=>{
+  const txt=[r.name,r.subkategorie,r.kategorie].join(" ");
+  const t={r,id:r.id,name:r.name,anb:r.anbieter,dh:dhKey(r.datenhaltung_filter),kat:katInfo(r.kategorie),zeile:zeileVon(r.kategorie),
+    pd:amp(r.ampel_personendaten),bg:amp(r.ampel_berufsgeheimnis),vischer:/^ja/i.test(r.vischer_bewertet||""),
+    reg:REG[r.region_anbieter]||r.hq_land,pp:Number(r.anzahl_pruefpunkte)||0,
+    quellen:(r.quellen||"").split("|").map(s=>s.trim()).filter(Boolean),
+    such:[r.name,r.anbieter,r.kategorie,r.subkategorie,r.modelle,r.zielgruppe].join(" ").toLowerCase(),
+    kurzname:r.name.replace(/\s*\([^)]*\)\s*/g," ").replace(/\s+/g," ").trim()};
+  t.fk=new Set(FUNK.filter(f=>f.t(txt+" "+(r.deployment||""),r)).map(f=>f.k));
+  const haupt=HAUPT_FUNK[r.kategorie];
+  t.extra=FUNK.filter(f=>t.fk.has(f.k)&&f.k!==haupt&&!(f.k==="api"&&t.fk.has("router"))).map(f=>f.k);
+  const k=[{ton:DH[t.dh].ton,text:DH[t.dh].satz}];
+  for(const[a,key]of[[t.pd,"pd"],[t.bg,"bg"]])k.push({ton:a.ton,text:AMP_SATZ[key][a.k]+(a.bed?` (${a.bed})`:"")});
+  const tr=jn(r.training_kundendaten);
+  if(tr==="nein")k.push({ton:"gut",text:"Ihre Eingaben werden nicht zum Trainieren der KI verwendet."});
+  else if(tr==="ja")k.push({ton:"schlecht",text:"Ihre Eingaben können zum Trainieren der KI verwendet werden."});
+  else if(tr==="offen")k.push({ton:"offen",text:"Ob Eingaben zum Training verwendet werden, ist noch offen."});
+  const ca=jn(r.us_cloud_act);
+  if(ca==="ja")k.push({ton:"mittel",text:"Der Anbieter untersteht US-Recht (CLOUD Act): US-Behörden könnten Zugriff verlangen – auch auf Daten in Europa."});
+  else if(ca==="nein")k.push({ton:"gut",text:"Kein US-Konzern im Hintergrund – kein Zugriff über den US CLOUD Act."});
+  t.kurz=k; t.cloudNein=ca==="nein"; t.onprem=t.fk.has("onprem"); t.ow=jn(r.open_weight)==="ja";
+  return t;
+});
+const BY = Object.fromEntries(TOOLS.map(t=>[t.id,t]));
+const ZAHL = Object.fromEntries(Object.keys(DH).map(k=>[k,TOOLS.filter(t=>t.dh===k).length]));
+const STAND = new Date(RAW.meta.stand).toLocaleDateString("de-CH",{day:"numeric",month:"long",year:"numeric"});
+const ZRANG = Object.fromEntries([...ZEILEN.map(z=>z.id),"weitere"].map((k,i)=>[k,i]));
+
+function filtern(s){
+  const q=(s.q||"").trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const out=TOOLS.filter(t=>{
+    if(s.ort==="ch"&&t.dh!=="ch")return false;
+    if(s.ort==="eu"&&!["ch","eu"].includes(t.dh))return false;
+    if(s.orte&&s.orte.length&&!s.orte.some(o=>o==="rest"?["unklar","us","cn"].includes(t.dh):t.dh===o))return false;
+    if(s.sens==="pd"&&!["gruen","gelb"].includes(t.pd.k))return false;
+    if(s.sens==="bg"&&!["gruen","gelb"].includes(t.bg.k))return false;
+    if(s.bed==="chat"&&!(t.fk.has("chat")&&["assistent","plattform","branche"].includes(t.zeile)))return false;
+    if(s.bed==="wissen"&&!t.fk.has("wissen"))return false;
+    if(s.bed==="spezial"&&!(t.zeile==="spezial"||t.fk.has("uebers")||t.fk.has("sprache")||t.fk.has("ocr")))return false;
+    if(s.bed==="api"&&!(t.fk.has("api")&&["api","bausteine"].includes(t.zeile)))return false;
+    if(s.bed==="onprem"&&!t.onprem)return false;
+    if(s.funk&&s.funk.length&&!s.funk.every(f=>t.fk.has(f)))return false;
+    if(s.cloud&&!t.cloudNein)return false;
+    if(s.vischer&&!t.vischer)return false;
+    if(q.length&&!q.every(w=>t.such.includes(w)))return false;
+    return true;});
+  const rel=s.sens==="bg"?"bg":"pd";
+  out.sort((a,b)=>a[rel].r-b[rel].r||DH[a.dh].rang-DH[b.dh].rang||ZRANG[a.zeile]-ZRANG[b.zeile]||a.pp-b.pp||a.name.localeCompare(b.name));
+  return out;
+}
+
+/* ---------- Render-Bausteine ---------- */
+const ampHTML=(a,was="")=>`<span class="amp amp-${a.k}" title="${esc(a.raw)}"><i></i>${was?`<em>${was}</em>`:""}${esc(a.l)}</span>`;
+const ortKurz=t=>`<span class="ort ort-${t.dh}">${PIN}${esc(DH[t.dh].label)}</span>`;
+const tiIcon=ton=>ton==="gut"?"✓":ton==="schlecht"?"✕":ton==="mittel"?"!":"?";
+const katHTML=t=>`<span class="kat"><span class="ki">${IC[t.kat.ic]}</span>${esc(t.kat.l)}</span>`;
+const kannHTML=(t,max=4)=>{ if(!t.extra.length) return "";
+  const show=t.extra.slice(0,max), rest=t.extra.length-show.length;
+  return `<div class="kann"><span class="l">Kann auch:</span>${show.map(k=>`<span class="chip chip-f">${IC[FUNK_BY[k].ic]}${FUNK_BY[k].l}</span>`).join("")}${rest>0?`<span class="chip chip-o">+${rest}</span>`:""}</div>`;};
+const DH_KURZ={ch:"Schweiz",eu:"Europa",eub:"EU, teilweise",unklar:"Unklar",us:"USA/weltweit",cn:"China"};
+const AMP_KURZ={gruen:"Geeignet",gelb:"Mit Auflagen",orange:"Eingeschränkt",rot:"Nein",abh:"Je nach Betrieb",offen:"Offen"};
+const profilHTML=t=>`<div class="profil"><div class="p-${t.dh==="ch"||t.dh==="eu"?"gruen":t.dh==="eub"?"gelb":t.dh==="unklar"?"offen":"rot"}" title="${esc(DH[t.dh].kurz)}"><span>Datenort</span><b>${DH_KURZ[t.dh]}</b></div>
+  <div class="p-${t.pd.k}" title="Personendaten: ${esc(t.pd.l)}"><span>Personendaten</span><b>${AMP_KURZ[t.pd.k]}</b></div><div class="p-${t.bg.k}" title="Berufsgeheimnis: ${esc(t.bg.l)}"><span>Berufsgeheimnis</span><b>${AMP_KURZ[t.bg.k]}</b></div></div>`;
+
+function detailHTML(t){
+  const r=t.r;
+  const fakten=[["Gespeichert in",r.speicherort_daten],["Verarbeitet in",r.inferenz_ort],["Datenschutzvertrag (AVV)",r.dpa_avv],["Preis",r.preis]];
+  const grp=GRUPPEN.map(g=>{const rows=g.f.filter(([k])=>r[k]!==""&&r[k]!=null);const off=rows.filter(([k])=>isOffen(r[k])).length;
+    return `<details class="acc"><summary><span>${g.t}</span>${off?`<span class="chip chip-o">${off} offen</span>`:""}</summary><dl>${
+      rows.map(([k,h])=>`<div class="row"><dt>${esc(L[k]||k)}<small>${esc(h)}</small></dt><dd>${isOffen(r[k])?'<span class="chip chip-o">noch offen</span> ':""}${esc(r[k])}</dd></div>`).join("")}</dl></details>`;}).join("");
+  return `<article class="det">
+    ${katHTML(t)}
+    <h1>${esc(t.name)}</h1>
+    <div class="det-anb"><span class="reg">${esc(t.reg)}</span>${esc(t.anb)}${t.vischer?'<span class="chip chip-v">VISCHER-geprüft</span>':""}</div>
+    <div class="det-was"><p><b>Was ist das?</b> ${esc(t.kat.d)} ${esc(r.subkategorie)}.</p>${kannHTML(t,20)}</div>
+    <section class="det-kurz"><h2>Kurz gesagt</h2><ul>${t.kurz.map(k=>`<li class="ton-${k.ton}"><span class="ti">${tiIcon(k.ton)}</span><span>${esc(k.text)}</span></li>`).join("")}</ul>
+      <div class="det-amps">${ampHTML(t.pd,"Personendaten: ")}${ampHTML(t.bg,"Berufsgeheimnis: ")}</div></section>
+    ${r.hinweise_fallstricke?`<section class="det-achtung"><h2>Darauf sollten Sie achten</h2><p>${esc(r.hinweise_fallstricke)}</p></section>`:""}
+    <section class="det-fakten">${fakten.map(([a,b])=>`<div class="fk ${isOffen(b)?"offen":""}"><span>${a}</span><b>${esc(b||"–")}</b></div>`).join("")}</section>
+    ${r.vischer_einschaetzung?`<section class="det-vischer"><h2>Rechtliche Einschätzung VISCHER</h2><p>${esc(r.vischer_einschaetzung)}</p><p class="muted klein">Paraphrasiert aus der VISCHER-Tabelle (Stand 8.7.2026). <a href="https://rosenthal.ch/downloads/VISCHER_ki-tools-07-26.pdf" target="_blank" rel="noopener">Original-PDF</a></p></section>`:""}
+    <section><h2>Alle Details</h2>${grp}
+      <details class="acc"><summary><span>Quellen &amp; Aktualität</span></summary><ul class="q">${t.quellen.map(q=>`<li><a href="${esc(q)}" target="_blank" rel="noopener">${esc((q.split("/")[2]||q).replace(/^www\./,""))}</a><small>${esc(q)}</small></li>`).join("")}</ul>
+      <p class="muted klein" style="padding:0 1.1rem 1rem;margin:0">Geprüft am ${esc(r.stand)} · ${t.pp} offene Prüfpunkte.</p></details></section>
+  </article>`;
+}
+
+/* ---------- Schublade (C + D) ---------- */
+const drawer=document.getElementById("drawer"), scrim=document.getElementById("scrim");
+function oeffne(id){ const t=BY[id]; if(!t) return;
+  drawer.innerHTML=`<div class="dr-hd"><span class="muted klein">Tool-Steckbrief</span><button class="btn btn-t" data-close>${IC.x} Schliessen</button></div><div class="dr-bd">${detailHTML(t)}</div>`;
+  drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden","false"); document.body.style.overflow="hidden";
+  drawer.querySelector("[data-close]").focus(); }
+function schliesse(){ drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden","true"); document.body.style.overflow=""; }
+drawer.addEventListener("click",e=>{ if(e.target.closest("[data-close]")) schliesse(); });
+scrim.addEventListener("click",schliesse);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") schliesse(); });
+
+/* ============================================================
+   B – Berater
+   ============================================================ */
+const B={ans:{},step:0,detail:null,alle:false,q:"",anim:false};
+const B_Q=[
+  {k:"sens",t:"Mit welchen Daten möchten Sie die KI nutzen?",h:"Davon hängt am meisten ab.",g2:false,o:[
+    ["",IC.doc,"Allgemeine Infos","Texte, Ideen, Recherche – keine Kunden- oder Personendaten"],
+    ["pd",IC.users,"Kunden- & Personendaten","Namen, Adressen, Kundenakten, Mitarbeiterdaten"],
+    ["bg",IC.lock,"Berufsgeheimnis","Anwalt, Ärztin, Treuhand, Behörde"]]},
+  {k:"ort",t:"Wo sollen Ihre Daten bleiben?",h:"Für die meisten KMU reicht Europa inkl. Schweiz.",g2:false,o:[
+    ["ch",IC.ch,"Nur in der Schweiz","Höchste Kontrolle, etwas kleinere Auswahl"],
+    ["eu",IC.eu,"In Europa inkl. Schweiz","Grösste Auswahl mit europäischem Datenschutz"],
+    ["",IC.globe,"Ist mir egal","Alle Angebote berücksichtigen"]]},
+  {k:"bed",t:"Wofür möchten Sie KI einsetzen?",h:"Wählen Sie, was am besten passt.",g2:true,o:[
+    ["chat",IC.chat,"Chatten & Texte schreiben","Ein KI-Assistent für das ganze Team"],
+    ["wissen",IC.doc,"Mit eigenen Dokumenten arbeiten","Fragen an Ablage, Verträge, Handbücher stellen"],
+    ["spezial",IC.tool,"Übersetzen, Diktieren, Dokumente auslesen","Spezialisierte Werkzeuge"],
+    ["api",IC.code,"In eigene Software einbauen","Für Entwickler und IT (API)"],
+    ["onprem",IC.server,"Auf eigenen Servern betreiben","Maximale Kontrolle im eigenen Haus"],
+    ["",IC.spark,"Ich schaue mich erst um","Alle Arten von Tools zeigen"]]},
+];
+const POPULAER=["us-openai-chatgpt-business","us-openai-chatgpt-enterprise","us-ms-m365-copilot-chat","us-ms-m365-copilot","us-anthropic-claude-team-ent","us-google-gemini-workspace","us-openai-chatgpt-consumer","eu-deepl-pro"];
+const bAv=`<div class="av">${SHIELD(15)}</div>`;
+function bTop(){return `<div class="vb-top"><a class="brand" href="#" data-b="restart"><span class="brand-m">${SHIELD(16)}</span><b>KI</b>-Grenzgänger</a><button class="btn btn-t" data-b="restart">↺ Neu beginnen</button></div>`;}
+function renderB(){
+  const el=document.getElementById("vb");
+  if(B.detail){ el.innerHTML=`${bTop()}<main class="vb-main"><button class="btn btn-t" data-b="back" style="margin-bottom:1rem">← Zurück zu ${B.step>=3?"den Empfehlungen":"den Fragen"}</button>${detailHTML(BY[B.detail])}</main>${bComposer()}`; return; }
+  let h=`<section class="vb-welcome"><div class="logo">${SHIELD(26)}</div><h1>Welche KI passt zu Ihren Daten?</h1>
+    <p>Drei kurze Fragen – danach empfehle ich Ihnen passende Tools und erkläre, worauf Sie achten müssen.</p>
+    <div class="vb-trust"><span>${IC.check}${TOOLS.length} Tools geprüft</span><span>${IC.check}Unabhängig, ohne Werbung</span><span>${IC.check}Stand ${STAND}</span></div></section>`;
+  B_Q.forEach((q,i)=>{
+    if(i>B.step)return;
+    const prog=`<div class="prog">${B_Q.map((_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("")}<span>Frage ${i+1} von ${B_Q.length}</span></div>`;
+    h+=`<div class="msg ${B.anim&&i===B.step?"neu":""}">${bAv}<div class="bd">${prog}<div class="tx">${q.t}${q.h?`<small>${q.h}</small>`:""}</div>`;
+    if(i===B.step){
+      h+=`<div class="vb-opts ${q.g2?"g2":""}">${q.o.map(([v,ic,l,s])=>{
+        const n=filtern({...B.ans,[q.k]:v}).length;
+        return `<button data-b="ans" data-k="${q.k}" data-v="${v}" data-i="${i}" ${n===0?"disabled style='opacity:.5'":""}><span class="ic">${ic}</span><span class="tt"><strong>${l}</strong><small>${s}</small></span><span class="n">${n} Tools</span></button>`;}).join("")}</div>`;}
+    h+=`</div></div>`;
+    if(i<B.step){const o=q.o.find(x=>x[0]===B.ans[q.k]);
+      h+=`<div class="msg user"><button class="bub" data-b="edit" data-i="${i}" title="Antwort ändern">${o[1]}${o[2]}<small>ändern</small></button></div>`;}
+  });
+  if(B.step>=B_Q.length)h+=bResult();
+  if(B.anim&&B.step>=B_Q.length)h=h.replace(/<div class="msg">(?=<div class="av">[\s\S]*?habe ich)/,'<div class="msg neu">');
+  el.innerHTML=`${bTop()}<main class="vb-main">${h}</main>${bComposer()}`;
+  B.anim=false;
+}
+function bGruende(t){const gut=t.kurz.filter(k=>k.ton==="gut").slice(0,3),achtung=t.kurz.find(k=>k.ton==="mittel"||k.ton==="schlecht");return[...gut,...(achtung?[achtung]:[])].slice(0,4);}
+function bResult(){
+  const s={...B.ans},list=filtern(s),recs=list.slice(0,3),rest=list.slice(3);
+  const sens={"":"allgemeine Infos",pd:"Kunden- und Personendaten",bg:"Daten unter Berufsgeheimnis"}[s.sens];
+  const ort={ch:"in der Schweiz",eu:"in Europa"}[s.ort];
+  const rel=s.sens==="bg"?"bg":"pd";
+  if(!list.length)return `<div class="msg">${bAv}<div class="bd"><div class="tx">Für diese Kombination habe ich leider kein passendes Tool gefunden. Versuchen Sie, Ihre Daten in Europa statt nur in der Schweiz zu halten – dort ist die Auswahl deutlich grösser.</div></div></div>`;
+  let h=`<div class="msg">${bAv}<div class="bd">
+    <div class="tx">Für ${sens}${ort?`, mit Daten ${ort},`:""} habe ich <b>${list.length} ${list.length===1?"passendes Tool":"passende Tools"}</b> gefunden. ${recs.length===1?"Das ist meine Empfehlung:":recs.length===3?"Das sind meine drei Empfehlungen:":"Das sind meine Empfehlungen:"}</div>
+    <div class="vb-recs">${recs.map((t,i)=>`<div class="vb-rec"><div class="top">
+      <div class="hd">${katHTML(t)}${t.vischer?'<span class="chip chip-v">VISCHER-geprüft</span>':""}<span class="rank"><b>${i+1}</b>Empfehlung</span></div>
+      <h3>${esc(t.name)}</h3><div class="an"><span class="reg">${esc(t.reg)}</span> ${esc(t.anb)}</div>
+      ${kannHTML(t)}
+      <ul>${bGruende(t).map(k=>`<li class="ton-${k.ton}"><span class="ti">${tiIcon(k.ton)}</span><span>${esc(k.text)}</span></li>`).join("")}</ul></div>
+      <div class="ft"><div class="amps">${ortKurz(t)}${ampHTML(t.pd,"Personendaten: ")}${ampHTML(t.bg,"Berufsgeheimnis: ")}</div><button class="btn btn-g" data-b="open" data-id="${t.id}">Steckbrief ansehen →</button></div>
+    </div>`).join("")}</div>
+    ${recs.length>1?`<div class="vb-cmp"><table><thead><tr><th></th>${recs.map(t=>`<th>${esc(t.kurzname)}</th>`).join("")}</tr></thead><tbody>
+      <tr><th>Art</th>${recs.map(t=>`<td>${esc(t.kat.l)}</td>`).join("")}</tr>
+      <tr><th>Datenort</th>${recs.map(t=>`<td>${ortKurz(t)}</td>`).join("")}</tr>
+      <tr><th>Personendaten</th>${recs.map(t=>`<td>${ampHTML(t.pd)}</td>`).join("")}</tr>
+      <tr><th>Berufsgeheimnis</th>${recs.map(t=>`<td>${ampHTML(t.bg)}</td>`).join("")}</tr>
+      <tr><th>US-Zugriff (CLOUD Act)</th>${recs.map(t=>`<td>${t.cloudNein?"Nein":jn(t.r.us_cloud_act)==="ja"?"Möglich":"Offen"}</td>`).join("")}</tr>
+      <tr><th>Preis</th>${recs.map(t=>`<td>${esc(t.r.preis||"–")}</td>`).join("")}</tr></tbody></table></div>`:""}
+    ${s.sens==="bg"?'<div class="vb-tip"><b>Mein Hinweis:</b> Bei Berufsgeheimnissen braucht es fast immer eine Zusatzvereinbarung mit dem Anbieter, und die Websuche sollte ausgeschaltet sein.</div>':s.sens==="pd"?'<div class="vb-tip"><b>Mein Hinweis:</b> Schliessen Sie mit dem Anbieter einen Auftragsverarbeitungsvertrag (AVV) ab und verwenden Sie nie die Gratis-Version für Kundendaten.</div>':""}
+  </div></div>`;
+  const pop=POPULAER.map(id=>BY[id]).filter(t=>t&&!recs.includes(t)&&(["","chat","wissen"].includes(s.bed??"")||(s.bed==="spezial"&&t.fk.has("uebers"))));
+  if(pop.length&&s.bed!=="api"&&s.bed!=="onprem"){
+    h+=`<div class="msg">${bAv}<div class="bd"><div class="tx">Und was ist mit ChatGPT, Copilot &amp; Co.?<small>So schneiden die bekannten Tools für ${sens} ab:</small></div>
+      <div class="vb-us">${pop.map(t=>`<button data-b="open" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span> <span class="muted klein">· ${esc(DH[t.dh].label)}</span></span>${ampHTML(t[rel])}<span class="vd">${esc(AMP_SATZ[rel][t[rel].k])}</span></button>`).join("")}</div></div></div>`;
+  }
+  if(rest.length)h+=`<div class="msg">${bAv}<div class="bd"><div class="tx">${B.alle?`Alle weiteren ${rest.length} passenden Tools, nach Eignung sortiert:`:`Es gibt noch ${rest.length} weitere passende Tools.`}</div>
+    ${B.alle?`<div class="vb-list">${rest.map(t=>`<button data-b="open" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="an">${esc(t.kat.l)} · ${esc(t.anb)}</span></span><span class="rt">${ortKurz(t)}${ampHTML(t[rel])}</span></button>`).join("")}</div>`
+      :`<div style="margin-top:.6rem"><button class="btn btn-g" data-b="alle">Alle ${rest.length} anzeigen</button></div>`}</div></div>`;
+  return h;
+}
+function bComposer(){
+  const q=B.q.trim().toLowerCase(),hits=q?TOOLS.filter(t=>t.such.includes(q)).slice(0,8):[];
+  return `<div class="vb-comp"><div class="vb-comp-in">
+    ${hits.length?`<div class="vb-sugg">${hits.map(t=>`<button data-b="open" data-id="${t.id}"><span>${esc(t.name)} <span class="muted klein">· ${esc(t.kat.l)}</span></span>${ortKurz(t)}</button>`).join("")}</div>`:""}
+    <div class="vb-box"><input id="b-q" placeholder="Kennen Sie schon ein Tool? Name eingeben, z.B. «Copilot» oder «Mistral»" value="${esc(B.q)}" autocomplete="off"><button class="send" aria-label="Suchen" data-b="send">↑</button></div>
+    <div class="vb-note">Redaktionelle Einschätzung, keine Rechtsberatung · Datenstand ${STAND}</div></div></div>`;
+}
+document.getElementById("vb").addEventListener("click",e=>{
+  const b=e.target.closest("[data-b]");if(!b||b.disabled)return;e.preventDefault();const a=b.dataset.b;
+  if(a==="ans"){B.ans[b.dataset.k]=b.dataset.v;B.step=+b.dataset.i+1;for(const q of B_Q.slice(B.step))delete B.ans[q.k];B.alle=false;B.anim=true;renderB();
+    setTimeout(()=>{const m=[...document.querySelectorAll("#vb .msg:not(.user)")].pop();m&&m.scrollIntoView({behavior:"smooth",block:"start"});},30);}
+  else if(a==="edit"){B.step=+b.dataset.i;renderB();}
+  else if(a==="restart"){Object.assign(B,{ans:{},step:0,detail:null,alle:false,q:""});renderB();scrollTo(0,0);}
+  else if(a==="open"){B.y=scrollY;B.detail=b.dataset.id;B.q="";renderB();scrollTo(0,0);}
+  else if(a==="back"){B.detail=null;renderB();scrollTo(0,B.y||0);}
+  else if(a==="alle"){B.alle=true;renderB();}
+  else if(a==="send"){const t=TOOLS.find(t=>t.such.includes(B.q.trim().toLowerCase()));if(t&&B.q.trim()){B.y=scrollY;B.detail=t.id;B.q="";renderB();scrollTo(0,0);}}
+});
+document.getElementById("vb").addEventListener("input",e=>{if(e.target.id!=="b-q")return;B.q=e.target.value;renderB();const i=document.getElementById("b-q");i.focus();i.setSelectionRange(i.value.length,i.value.length);});
+document.getElementById("vb").addEventListener("keydown",e=>{if(e.target.id==="b-q"&&e.key==="Enter")document.querySelector('#vb [data-b="send"]').click();});
+
+/* ============================================================
+   C – Verzeichnis
+   ============================================================ */
+const C={orte:[],sens:"",funk:[],q:"",cloud:false,vischer:false,ansicht:"karten",sort:""};
+const C_DIST=[["ch","Schweiz",ZAHL.ch],["eu","Europa",ZAHL.eu],["eub","EU mit Ausnahmen",ZAHL.eub],["rest","USA, China, unklar",ZAHL.us+ZAHL.cn+ZAHL.unklar]];
+const C_FUNK=["chat","wissen","agent","office","api","router","vektor","embed","uebers","sprache","ocr","gpu","onprem"];
+function cListe(){const l=filtern(C);
+  if(C.sort==="name")l.sort((a,b)=>a.name.localeCompare(b.name));
+  if(C.sort==="ort")l.sort((a,b)=>DH[a.dh].rang-DH[b.dh].rang||a.pd.r-b.pd.r);
+  if(C.sort==="pd")l.sort((a,b)=>a.pd.r-b.pd.r||DH[a.dh].rang-DH[b.dh].rang);
+  if(C.sort==="bg")l.sort((a,b)=>a.bg.r-b.bg.r||DH[a.dh].rang-DH[b.dh].rang);
+  return l;}
+function cKarte(t){return `<button class="vc-card" data-c="open" data-id="${t.id}"><div class="in">
+  <div class="hd">${katHTML(t)}${t.vischer?'<span class="chip chip-v">VISCHER</span>':""}</div>
+  <h4>${esc(t.name)}</h4><div class="an"><span class="reg">${esc(t.reg)}</span>${esc(t.anb)}</div>
+  <p class="ds">${esc(t.r.subkategorie)}</p>${kannHTML(t,3)}</div>${profilHTML(t)}</button>`;}
+function renderC(){
+  const el=document.getElementById("vc"),list=cListe(),total=TOOLS.length,aktiv=C.orte.length||C.sens||C.funk.length||C.q||C.cloud||C.vischer;
+  const fcount=k=>filtern({...C,funk:[...new Set([...C.funk,k])]}).length;
+  let res;
+  if(!list.length) res=`<div class="vc-empty"><b>Keine Tools für diese Auswahl.</b><br>Entfernen Sie eine Funktion oder wählen Sie einen weiteren Datenort.<br><br><button class="btn btn-g" data-c="reset">Filter zurücksetzen</button></div>`;
+  else if(C.ansicht==="karten"){
+    const gruppen=[...ZEILEN,{id:"weitere",l:"Weitere",s:"",ic:"spark"}].map(z=>({z,tools:list.filter(t=>t.zeile===z.id)})).filter(g=>g.tools.length);
+    res=gruppen.map(({z,tools})=>`<section class="vc-grp"><div class="vc-gh"><span class="ki">${IC[z.ic]}</span><div><h3>${z.l}</h3><p>${z.s}</p></div><span class="n">${tools.length} ${tools.length===1?"Tool":"Tools"}</span></div>
+      <div class="vc-cards">${tools.map(cKarte).join("")}</div></section>`).join("");
+  } else {
+    res=`<div class="vc-tbl"><div class="vc-head">${[["name","Tool"],["","Art & Funktionen"],["ort","Datenort"],["pd","Personendaten"],["bg","Berufsgeheimnis"]].map(([k,l])=>k?`<button data-c="sort" data-k="${k}" ${C.sort===k?"data-on":""}>${l}${C.sort===k?" ↓":""}</button>`:`<span>${l}</span>`).join("")}</div>
+      ${list.map(t=>`<button class="vc-row" data-c="open" data-id="${t.id}"><span><span class="nm">${esc(t.name)}</span><span class="an">${esc(t.reg)} · ${esc(t.anb)}</span></span>
+        <span class="kt">${katHTML(t)}${kannHTML(t,2)}</span><span>${ortKurz(t)}</span><span>${ampHTML(t.pd,"Personendaten: ")}</span><span>${ampHTML(t.bg,"Berufsgeheimnis: ")}</span></button>`).join("")}</div>`;
+  }
+  el.innerHTML=`<header class="vc-top"><div class="vc-top-in"><a class="brand" href="#"><span class="brand-m">${SHIELD(16)}</span><b>KI</b>-Grenzgänger</a>
+      <label class="vc-search">${IC.search}<span class="sr">Suche</span><input id="c-q" type="search" placeholder="Tool, Anbieter oder Modell suchen …" value="${esc(C.q)}"></label></div></header>
+    <div class="vc-wrap">
+      <div class="vc-hero"><div><h1>Das KI-Verzeichnis für Schweizer KMU</h1><p>${total} KI-Tools, eingeordnet nach Datenort und Datenschutz. Filtern Sie nach dem, was Sie brauchen – jedes Tool hat einen ausführlichen Steckbrief.</p></div>
+        <div class="vc-dist"><h3><span>Wo bleiben die Daten?</span><span>Klicken zum Filtern</span></h3>
+          <div class="vc-bar ${C.orte.length?"sel":""}">${C_DIST.map(([k,l,n])=>`<button class="s-${k}" style="flex:${n}" data-c="ort" data-k="${k}" aria-pressed="${C.orte.includes(k)}" title="${l}: ${n} Tools">${n}</button>`).join("")}</div>
+          <div class="vc-bar-l">${C_DIST.map(([k,l,n])=>`<span><i class="s-${k}"></i>${l} <b>${n}</b></span>`).join("")}</div></div></div>
+      <div class="vc-tools">
+        <div class="vc-tr"><span class="lb">Ihre Daten</span><div class="seg">${[["","Alle Daten"],["pd","Personendaten"],["bg","Berufsgeheimnis"]].map(([v,l])=>`<button data-c="sens" data-k="${v}" aria-pressed="${C.sens===v}">${l}</button>`).join("")}</div>
+          <span class="muted klein">${C.sens?"Zeigt nur Tools mit grüner oder gelber Ampel":""}</span></div>
+        <div class="vc-tr"><span class="lb">Funktionen</span><div class="vc-chips">${C_FUNK.map(k=>{const f=FUNK_BY[k],on=C.funk.includes(k),n=on?list.length:fcount(k);
+          return `<button class="fchip" data-c="funk" data-k="${k}" aria-pressed="${on}" ${!on&&n===0?"disabled style='opacity:.4'":""}>${IC[f.ic]}${f.l}<em>${n}</em></button>`;}).join("")}</div></div>
+        <div class="vc-tr"><span class="lb">Extras</span><div class="vc-chips">
+          <button class="fchip" data-c="cloud" aria-pressed="${C.cloud}">${IC.lock}Kein US CLOUD Act</button>
+          <button class="fchip" data-c="vischer" aria-pressed="${C.vischer}">${IC.check}VISCHER-geprüft</button></div></div>
+      </div>
+      <div class="vc-res"><h2>${list.length} ${list.length===1?"Tool":"Tools"}<span>${aktiv?`von ${total}`:"– alle Einträge"}</span></h2>
+        <div class="r">${aktiv?'<button class="btn btn-t" data-c="reset">Filter zurücksetzen</button>':""}
+          ${C.ansicht==="liste"?`<select class="vc-sel" id="c-sort"><option value="">Empfehlung</option><option value="name" ${C.sort==="name"?"selected":""}>Name A–Z</option><option value="ort" ${C.sort==="ort"?"selected":""}>Datenort</option><option value="pd" ${C.sort==="pd"?"selected":""}>Personendaten</option><option value="bg" ${C.sort==="bg"?"selected":""}>Berufsgeheimnis</option></select>`:""}
+          <div class="seg"><button data-c="ansicht" data-k="karten" aria-pressed="${C.ansicht==="karten"}">${IC.grid}Karten</button><button data-c="ansicht" data-k="liste" aria-pressed="${C.ansicht==="liste"}">${IC.list}Liste</button></div></div></div>
+      ${res}
+    </div>`;
+}
+const vc=document.getElementById("vc");
+vc.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b||b.disabled)return;const a=b.dataset.c,k=b.dataset.k;
+  if(a==="open"){oeffne(b.dataset.id);return;}
+  if(a==="ort")C.orte=C.orte.includes(k)?C.orte.filter(x=>x!==k):[...C.orte,k];
+  else if(a==="sens")C.sens=k;
+  else if(a==="funk")C.funk=C.funk.includes(k)?C.funk.filter(x=>x!==k):[...C.funk,k];
+  else if(a==="cloud")C.cloud=!C.cloud;
+  else if(a==="vischer")C.vischer=!C.vischer;
+  else if(a==="ansicht")C.ansicht=k;
+  else if(a==="sort")C.sort=C.sort===k?"":k;
+  else if(a==="reset")Object.assign(C,{orte:[],sens:"",funk:[],q:"",cloud:false,vischer:false});
+  else return;
+  e.preventDefault();const y=scrollY;renderC();scrollTo(0,y);});
+vc.addEventListener("change",e=>{if(e.target.id==="c-sort"){C.sort=e.target.value;renderC();}});
+let cT;vc.addEventListener("input",e=>{if(e.target.id!=="c-q")return;clearTimeout(cT);
+  cT=setTimeout(()=>{C.q=e.target.value;renderC();const i=document.getElementById("c-q");i.focus();i.setSelectionRange(i.value.length,i.value.length);},220);});
+
+/* ============================================================
+   D – Marktlandkarte
+   ============================================================ */
+const D={nach:"pd",q:"",nurGut:false};
+const D_SP=[["ch","Schweiz","Daten bleiben in CH",["ch"],true],["eu","Europa","EU/EWR inkl. CH",["eu"],true],["eub","Europa mit Ausnahmen","Einzelne Funktionen ausserhalb",["eub"],false],
+            ["unklar","Noch unklar","Beim Anbieter nachfragen",["unklar"],false],["us","USA, weltweit, China","Daten verlassen Europa",["us","cn"],false]];
+function renderD(){
+  const el=document.getElementById("vd"),q=D.q.trim().toLowerCase();
+  const zeilen=[...ZEILEN,{id:"weitere",l:"Weitere",s:"",ic:"spark"}].filter(z=>TOOLS.some(t=>t.zeile===z.id));
+  const rang=t=>t[D.nach].r;
+  let treffer=0;
+  const zelle=(z,sp)=>{const ts=TOOLS.filter(t=>t.zeile===z.id&&sp[3].includes(t.dh)&&(!D.nurGut||["gruen","gelb"].includes(t[D.nach].k))).sort((a,b)=>rang(a)-rang(b)||a.name.localeCompare(b.name));
+    return `<div class="vd-cell ${sp[4]?"gut":""} ${ts.length?"":"leerzelle"}" data-col="${sp[1]}">${ts.length?ts.map(t=>{const hit=q&&t.such.includes(q);if(hit)treffer++;
+      return `<button class="pill a-${t[D.nach].k} ${q?(hit?"hit":"dim"):""}" data-d="open" data-id="${t.id}" title="${esc(t.name)} – ${esc(t.anb)} · ${esc(t.kat.l)} · ${D.nach==="pd"?"Personendaten":"Berufsgeheimnis"}: ${esc(t[D.nach].l)}"><i></i><span>${esc(t.kurzname)}</span></button>`;}).join(""):'<span class="leer">–</span>'}</div>`;};
+  const map=`<div class="vd-map">
+    <div class="vd-ch"><b>Was Sie brauchen</b><span>↓ Art des Tools · → Datenort</span></div>
+    ${D_SP.map(sp=>{const n=TOOLS.filter(t=>sp[3].includes(t.dh)).length;return `<div class="vd-ch c-${sp[0]} ${sp[4]?"gut":""}"><div class="bar"></div><b>${sp[1]} <span style="display:inline;font-weight:400">· ${n}</span></b><span>${sp[2]}</span></div>`;}).join("")}
+    ${zeilen.map(z=>{const n=TOOLS.filter(t=>t.zeile===z.id).length;return `<div class="vd-rh"><span class="ki">${IC[z.ic]}</span><div><b>${z.l}</b><span>${z.s}</span><em>${n} Tools</em></div></div>${D_SP.map(sp=>zelle(z,sp)).join("")}`;}).join("")}
+  </div>`;
+  const gutCH=TOOLS.filter(t=>t.dh==="ch"&&t.pd.k==="gruen").length;
+  const frontierEU=TOOLS.filter(t=>t.dh==="eu"&&/gpt|claude|gemini/i.test(t.r.modelle||"")).length;
+  el.innerHTML=`<header class="vc-top"><div class="vc-top-in"><a class="brand" href="#"><span class="brand-m">${SHIELD(16)}</span><b>KI</b>-Grenzgänger</a></div></header>
+  <div class="vd-wrap">
+    <div class="vd-hero"><div><h1>Der KI-Markt auf einen Blick</h1><p>Jedes Kärtchen ist ein Tool. Links steht, wofür es gedacht ist, oben, wo Ihre Daten bleiben. Die Farbe zeigt, ob es für Ihre Daten geeignet ist. Klicken Sie auf ein Tool für den Steckbrief.</p></div>
+      <span class="muted klein">${TOOLS.length} Tools · Stand ${STAND}</span></div>
+    <div class="vd-ctl">
+      <div class="grp"><span class="lb">Farbe zeigt Eignung für</span><div class="seg"><button data-d="nach" data-k="pd" aria-pressed="${D.nach==="pd"}">${IC.users}Personendaten</button><button data-d="nach" data-k="bg" aria-pressed="${D.nach==="bg"}">${IC.lock}Berufsgeheimnis</button></div></div>
+      <button class="fchip" data-d="gut" aria-pressed="${D.nurGut}">${IC.check}Nur geeignete zeigen</button>
+      <label class="vd-find">${IC.search}<span class="sr">Tool finden</span><input id="d-q" type="search" placeholder="Tool finden, z.B. Copilot" value="${esc(D.q)}"></label>
+    </div>
+    <div class="vd-leg">${["gruen","gelb","orange","rot","offen"].map(k=>`<span class="amp amp-${k}"><i></i>${AMP[k].l}</span>`).join("")}${q?`<span><b>${treffer}</b> Treffer für «${esc(D.q)}»</span>`:""}</div>
+    ${map}
+    <p class="vd-note">Grün hinterlegt: Spalten, in denen Ihre Daten in der Schweiz oder in Europa bleiben können.</p>
+    <div class="vd-insights">
+      <div class="vd-ins"><b>${ZAHL.ch} Tools mit Daten in der Schweiz</b><p>Davon ${gutCH} für Personendaten geeignet. Fast alle setzen auf offene Modelle wie Mistral, Qwen oder Apertus.</p></div>
+      <div class="vd-ins"><b>GPT, Claude &amp; Gemini nur via Europa</b><p>Die bekannten US-Modelle gibt es höchstens mit Datenhaltung in Europa (${frontierEU} Angebote) – praktisch nie nur in der Schweiz.</p></div>
+      <div class="vd-ins"><b>Gratis-Versionen sind tabu</b><p>ChatGPT Free, Claude Free, Copilot und Gemini für Privatkunden sind für Firmendaten ungeeignet.</p></div>
+    </div>
+  </div>`;
+}
+const vd=document.getElementById("vd");
+vd.addEventListener("click",e=>{const b=e.target.closest("[data-d]");if(!b)return;const a=b.dataset.d;
+  if(a==="open"){oeffne(b.dataset.id);return;}
+  if(a==="nach")D.nach=b.dataset.k; else if(a==="gut")D.nurGut=!D.nurGut; else return;
+  const y=scrollY;renderD();scrollTo(0,y);});
+let dT;vd.addEventListener("input",e=>{if(e.target.id!=="d-q")return;clearTimeout(dT);
+  dT=setTimeout(()=>{D.q=e.target.value;renderD();const i=document.getElementById("d-q");i.focus();i.setSelectionRange(i.value.length,i.value.length);
+    const h=vd.querySelector(".pill.hit");h&&h.scrollIntoView({block:"center",behavior:"smooth"});},250);});
+
+/* ============================================================
+   Umschalter
+   ============================================================ */
+const DESC={
+  b:"Berater: drei Fragen wie im Gespräch, danach drei begründete Empfehlungen, Vergleich und «ChatGPT & Co.».",
+  c:"Verzeichnis: Datenort-Leiste, Filter nach Funktionen, Karten nach Kategorie gruppiert – oder als Liste.",
+  d:"Marktlandkarte: alle Tools in einer Matrix aus Bedarf × Datenort, eingefärbt nach Eignung.",
+};
+function zeige(v){
+  schliesse();
+  for(const x of["b","c","d"])document.getElementById("v"+x).hidden=x!==v;
+  document.querySelectorAll(".sw-tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
+  document.getElementById("sw-desc").textContent=DESC[v];
+  ({b:renderB,c:renderC,d:renderD})[v]();
+  try{localStorage.setItem("ki-design2",v);}catch(_){}
+  scrollTo(0,0);
+}
+document.querySelector(".sw-tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)zeige(b.dataset.v);});
+document.addEventListener("keydown",e=>{if(e.target.matches("input,select,textarea"))return;const m={"1":"b","2":"c","3":"d"}[e.key];if(m)zeige(m);});
+const root=document.documentElement;
+function setTheme(t){root.dataset.theme=t;try{localStorage.setItem("ki-theme",t);}catch(_){}}
+document.getElementById("sw-theme").addEventListener("click",()=>setTheme(root.dataset.theme==="dark"?"light":"dark"));
+let gespeichert=null,thema=null;try{gespeichert=localStorage.getItem("ki-design2");thema=localStorage.getItem("ki-theme");}catch(_){}
+setTheme(thema||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+// Direktlinks: #b, #c, #d – optional mit Zustand: #b/pd/eu/chat · #c/liste · #c/f/wissen/agent · #c/open/<id> · #d/bg · #d/open/<id>
+const [hv,...hp]=location.hash.slice(1).split("/");
+if(hv==="b"&&hp.length>=3){B.ans={sens:hp[0],ort:hp[1],bed:hp[2]};B.step=3;}
+if(hv==="c"&&hp[0]==="liste")C.ansicht="liste";
+if(hv==="c"&&hp[0]==="f")C.funk=hp.slice(1);
+if(hv==="d"&&hp[0]==="bg")D.nach="bg";
+zeige(["b","c","d"].includes(hv)?hv:["b","c","d"].includes(gespeichert)?gespeichert:"b");
+if((hv==="c"||hv==="d")&&hp[0]==="open")oeffne(hp[1]);
+</script>
+</body>
+</html>

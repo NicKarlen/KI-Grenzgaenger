@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% from "_makros.html" import amp, kat, ort, avatar, lst %}
+{% block title %}{% if fertig %}KI-Empfehlung: {{ seiten_titel }}{% else %}Welche KI passt zu Ihren Daten?{% endif %}{% endblock %}
+{% block description %}{% if fertig %}{{ seiten_text }}{% else %}{{ super() }}{% endif %}{% endblock %}
+{% block head %}{% if pfad %}<meta name="robots" content="noindex, follow">{% endif %}{% endblock %}
+{% block body_class %}seite-berater{% endblock %}
+{% block content %}
+<div class="vb-main">
+  <section class="vb-welcome{% if pfad %} kompakt{% endif %}">
+    {% if not pfad %}<div class="logo"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3v3M12 9.5v5M12 18v3M4 12h15M15.5 8.5 19 12l-3.5 3.5" fill="none" stroke-linecap="round" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>{% endif %}
+    <h1>Welche KI passt zu Ihren Daten?</h1>
+    {% if not pfad %}<p>Drei Fragen – dann zeige ich passende Tools.</p>{% endif %}
+    <p class="vb-meta">{{ daten_anzahl }} Tools · unabhängig · Stand {{ daten_stand|datum }}</p>
+  </section>
+
+  {% for e in verlauf %}
+  <div class="msg{% if e.aktiv %} neu{% endif %}" {% if e.aktiv %}id="aktuell"{% endif %}>
+    {{ avatar() }}
+    <div class="bd">
+      <div class="prog" aria-label="Frage {{ e.nr }} von {{ fragen_total }}">{% for n in prog %}<i class="{% if n <= e.nr %}on{% endif %}"></i>{% endfor %}<span>Frage {{ e.nr }} von {{ fragen_total }}</span></div>
+      <h2 class="tx">{{ e.frage.titel }}<small>{{ e.frage.hilfe }}</small></h2>
+      {% if e.optionen is defined %}
+      <div class="vb-opts{% if e.frage.breit %} g2{% endif %}">
+        {% for o in e.optionen %}
+        {% if o.anzahl %}
+        <a class="opt" href="{{ url(o.pfad) }}#aktuell"><span class="ic">{{ icon(o.icon) }}</span><span class="tt"><strong>{{ o.label }}</strong><small>{{ o.hilfe }}</small></span><span class="n">{{ o.anzahl }} Tools</span></a>
+        {% else %}
+        <span class="opt aus" aria-disabled="true"><span class="ic">{{ icon(o.icon) }}</span><span class="tt"><strong>{{ o.label }}</strong><small>{{ o.hilfe }}</small></span><span class="n">keine Tools</span></span>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% if e.antwort is defined %}
+  <div class="msg user"><a class="bub" href="{{ url(e.aendern_pfad) }}#aktuell" title="Antwort ändern">{{ icon(e.antwort.icon, 16) }}{{ e.antwort.label }}<small>ändern</small></a></div>
+  {% endif %}
+  {% endfor %}
+
+  {% if fertig %}
+  <div class="msg neu" id="aktuell">
+    {{ avatar() }}
+    <div class="bd">
+      {% if not liste %}
+      <p class="tx">Für diese Kombination habe ich leider kein passendes Tool gefunden. Versuchen Sie, Ihre Daten in Europa statt nur in der Schweiz zu halten – dort ist die Auswahl deutlich grösser.</p>
+      {% else %}
+      <p class="tx">Für {{ sens_text }}{% if ort_text %}, mit Daten {{ ort_text }},{% endif %} erfüllen <b>{{ liste|length }} {% if liste|length == 1 %}Tool{% else %}Tools{% endif %}</b> Ihre Vorgaben.
+        {% if rollen[0].rolle == "beide" %}Ein Tool bietet hier die stärkste KI <em>und</em> den besten Datenschutz zugleich – das ist meine erste Wahl:{% elif mit_leistung and rollen|length > 1 %}Statt einer Rangliste zeige ich Ihnen, wo Sie wählen müssen – zwischen der stärksten KI und dem besten Datenschutz:{% elif rollen|length == 1 %}Das ist meine Empfehlung:{% else %}Das sind meine Empfehlungen:{% endif %}</p>
+
+      <div class="vb-recs">
+        {% for r in rollen %}
+        {% set t = r.tool %}
+        <article class="vb-rec rolle-{{ r.rolle }}">
+          <div class="rolle"><b>{{ r.label }}</b><span>{{ r.hilfe }}</span></div>
+          <div class="top">
+            <div class="hd">{{ kat(t) }}{% if t.vischer %}<span class="chip chip-v">VISCHER-geprüft</span>{% endif %}</div>
+            <h3>{{ t.name }}</h3>
+            <div class="an"><span class="reg">{{ t.region_kurz }}</span> {{ t.anbieter }}</div>
+            {{ kann_auch(t, 4) }}
+            <ul>{% for k in t.gruende_fuer(ort_wahl) %}<li class="ton-{{ k.ton }}"><span class="ti" aria-hidden="true">{{ k.ton|ton_icon }}</span><span>{{ k.text }}</span></li>{% endfor %}</ul>
+          </div>
+          <div class="ft">
+            <div class="amps">
+              {{ lst(r.leistung) }}
+              {{ ort(t) }}
+              {{ amp(t.ampel_pd, "Personendaten: ") }}
+              {{ amp(t.ampel_bg, "Berufsgeheimnis: ") }}
+            </div>
+            <a class="btn btn-g" href="{{ url('tool/' ~ t.id ~ '/') }}" data-drawer>Steckbrief ansehen {{ icon("arrow", 15) }}</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      {% if empfehlungen|length > 1 %}
+      <div class="vb-cmp">
+        <table>
+          <thead><tr><th><span class="sr">Merkmal</span></th>{% for t in empfehlungen %}<th>{{ t.kurzname }}</th>{% endfor %}</tr></thead>
+          <tbody>
+            <tr><th>Rolle</th>{% for r in rollen %}<td><b>{{ r.label }}</b></td>{% endfor %}</tr>
+            <tr><th>Leistung</th>{% for r in rollen %}<td>{{ lst(r.leistung) }}</td>{% endfor %}</tr>
+            <tr><th>Art</th>{% for t in empfehlungen %}<td>{{ t.kat.label }}</td>{% endfor %}</tr>
+            <tr><th>Datenort</th>{% for t in empfehlungen %}<td>{{ ort(t) }}</td>{% endfor %}</tr>
+            <tr><th>Personendaten</th>{% for t in empfehlungen %}<td>{{ amp(t.ampel_pd) }}</td>{% endfor %}</tr>
+            <tr><th>Berufsgeheimnis</th>{% for t in empfehlungen %}<td>{{ amp(t.ampel_bg) }}</td>{% endfor %}</tr>
+            <tr><th>US-Zugriff (CLOUD Act)</th>{% for t in empfehlungen %}<td>{{ t.cloud_act_text }}</td>{% endfor %}</tr>
+            <tr><th>Preis</th>{% for t in empfehlungen %}<td>{{ t.raw.preis or "–" }}</td>{% endfor %}</tr>
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      {% if sens == "bg" %}
+      <div class="vb-tip"><b>Mein Hinweis:</b> Bei Berufsgeheimnissen braucht es fast immer eine Zusatzvereinbarung mit dem Anbieter, und die Websuche sollte ausgeschaltet sein. <a href="{{ url('grundlagen/') }}#berufsgeheimnis">Mehr erfahren</a></div>
+      {% elif sens == "pd" %}
+      <div class="vb-tip"><b>Mein Hinweis:</b> Schliessen Sie mit dem Anbieter einen Auftragsverarbeitungsvertrag (AVV) ab und verwenden Sie nie die Gratis-Version für Kundendaten.</div>
+      {% endif %}
+      {% endif %}
+      {% set link = site_url ~ pfad if site_url else "" %}
+      <div class="vb-teilen" data-teilen>
+        <span class="muted">Ergebnis teilen:</span>
+        <a class="btn btn-g" href="https://www.linkedin.com/sharing/share-offsite/?url={{ link|urlencode }}" target="_blank" rel="noopener" data-linkedin>{{ icon("linkedin", 15) }} Auf LinkedIn</a>
+        <button class="btn btn-g" type="button" data-kopieren hidden>{{ icon("link", 15) }} <span>Link kopieren</span></button>
+      </div>
+    </div>
+  </div>
+
+
+  {% if rest %}
+  <div class="msg" id="weitere">
+    {{ avatar() }}
+    <div class="bd">
+      <p class="tx">Es gibt noch {{ rest|length }} weitere passende Tools, sortiert nach Leistung und Datenschutz zusammen.</p>
+      <details class="vb-alle">
+        <summary class="btn btn-g">Alle {{ rest|length }} anzeigen</summary>
+        <div class="vb-list">
+          {% for t in rest %}
+          <a href="{{ url('tool/' ~ t.id ~ '/') }}" data-drawer>
+            <span><span class="nm">{{ t.name }}</span><span class="an">{{ t.kat.label }} · {{ t.anbieter }}</span></span>
+            <span class="rt">{% if mit_leistung %}{{ lst(t.leistung_passend(ort_wahl)) }}{% endif %}{{ ort(t) }}{% if rel == "bg" %}{{ amp(t.ampel_bg) }}{% else %}{{ amp(t.ampel_pd) }}{% endif %}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </details>
+      <div class="vb-mehr"><a class="btn btn-t" href="{{ url('verzeichnis/') }}{{ verzeichnis_query }}">Im Verzeichnis vergleichen {{ icon("arrow", 15) }}</a></div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+</div>
+
+<form class="vb-comp" action="{{ url('verzeichnis/') }}" method="get" role="search">
+  <div class="vb-comp-in">
+    <div class="vb-sugg" id="vb-sugg" hidden></div>
+    <div class="vb-box">
+      <label class="sr" for="vb-q">Tool suchen</label>
+      <input id="vb-q" name="q" placeholder="Kennen Sie schon ein Tool? Name eingeben, z.B. «Copilot» oder «Mistral»" autocomplete="off">
+      <button class="send" type="submit" aria-label="Suchen">{{ icon("up", 18) }}</button>
+    </div>
+    <div class="vb-note">Redaktionelle Einschätzung, keine Rechtsberatung · Datenstand {{ daten_stand|datum }} · <a href="{{ url('ueber/') }}">Über das Projekt</a></div>
+  </div>
+</form>
+{% endblock %}
+{% block footer %}{% endblock %}

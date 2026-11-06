@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+_site/
+.env
+design/design-auswahl.html

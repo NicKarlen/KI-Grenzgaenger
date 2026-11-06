@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% from "_makros.html" import amp, kat, ort, lst %}
+{% block title %}Verzeichnis{% endblock %}
+{% block body_class %}seite-breit{% endblock %}
+{% block topbar_class %}voll{% endblock %}
+
+{% block content %}
+<div class="vz voll">
+  <section class="vz-kopf">
+    <div class="vz-titel">
+      <h1>Das KI-Verzeichnis</h1>
+      <p>{{ total }} KI-Tools für Schweizer KMU, eingeordnet nach Datenort und Datenschutz. Klicken Sie auf ein Tool für den ausführlichen Steckbrief.</p>
+    </div>
+    <div class="vz-dist">
+      <div class="vz-dist-h"><span>Wo bleiben die Daten?</span><span>Zum Filtern anklicken</span></div>
+      <div class="vz-bar" id="vz-bar">
+        {% for o in ort_leiste %}<a class="s-{{ o.key }}" style="flex:{{ o.anzahl }}" href="?ort={{ o.key }}" data-ort="{{ o.key }}" aria-pressed="false" title="{{ o.label }}: {{ o.anzahl }} Tools">{{ o.anzahl }}</a>{% endfor %}
+      </div>
+      <div class="vz-bar-l">{% for o in ort_leiste %}<span><i class="s-{{ o.key }}"></i>{{ o.label }} <b>{{ o.anzahl }}</b></span>{% endfor %}</div>
+    </div>
+  </section>
+
+  <div class="vz-body">
+    <form class="vz-side" method="get" action="./" id="filter">
+      <details class="vz-filter" open>
+        <summary>{{ icon("filter", 16) }} Filter <span class="chip chip-o" data-aktiv hidden>aktiv</span></summary>
+
+        <label class="vz-suche">{{ icon("search", 16) }}<span class="sr">Suche</span>
+          <input type="search" name="q" value="" placeholder="Tool, Anbieter, Modell …">
+        </label>
+
+        <fieldset class="vz-grp">
+          <legend>Ihre Daten</legend>
+          {% for wert, label in sens_optionen %}
+          <label><input type="radio" name="sens" value="{{ wert }}" {% if not wert %}checked{% endif %}><span>{{ label }}</span><em data-n="sens:{{ wert }}"></em></label>
+          {% endfor %}
+          <p class="vz-hilfe" data-sens-hilfe hidden>Zeigt nur Tools mit grüner oder gelber Ampel.</p>
+        </fieldset>
+
+        <fieldset class="vz-grp">
+          <legend>Datenort</legend>
+          {% for o in ort_leiste %}
+          <label><input type="checkbox" name="ort" value="{{ o.key }}"><i class="sw s-{{ o.key }}"></i><span>{{ o.label }}</span><em>{{ o.anzahl }}</em></label>
+          {% endfor %}
+        </fieldset>
+
+        <fieldset class="vz-grp">
+          <legend>Art des Tools</legend>
+          {% for wert, label, ic in art_optionen %}
+          <label><input type="radio" name="art" value="{{ wert }}" {% if not wert %}checked{% endif %}><span class="li">{{ icon(ic, 15) }}</span><span>{{ label }}</span><em data-n="art:{{ wert }}"></em></label>
+          {% endfor %}
+        </fieldset>
+
+        <fieldset class="vz-grp">
+          <legend>Funktionen <small>(alle gewählten müssen passen)</small></legend>
+          {% for fk in funk_optionen %}
+          <label><input type="checkbox" name="funk" value="{{ fk.key }}"><span class="li">{{ icon(fk.icon, 15) }}</span><span>{{ fk.label }}</span><em data-n="funk:{{ fk.key }}"></em></label>
+          {% endfor %}
+        </fieldset>
+
+        <fieldset class="vz-grp">
+          <legend>Für Fachleute</legend>
+          <label><input type="checkbox" name="cloud" value="1"><span>Kein US CLOUD Act</span></label>
+          <label><input type="checkbox" name="vischer" value="1"><span>VISCHER-geprüft</span></label>
+        </fieldset>
+
+        <input type="hidden" name="sort" value="">
+        <div class="vz-aktion">
+          <button class="btn btn-p js-weg" type="submit">Anwenden</button>
+          <a class="btn btn-t" href="./" data-reset hidden>Alle Filter zurücksetzen</a>
+        </div>
+      </details>
+
+      <div class="vz-legende">
+        <b>So lesen Sie die Ampeln</b>
+        {% for k, label in ampel_legende %}<span class="amp amp-{{ k }}"><i></i>{{ label }}</span>{% endfor %}
+        <a href="{{ url('grundlagen/') }}">Wie wir bewerten</a>
+      </div>
+    </form>
+
+    <section class="vz-main" aria-live="polite">
+      <div class="vz-res">
+        <h2><span data-anzahl>{{ tools|length }} Tools</span><span data-anzahl-info>– alle Einträge</span></h2>
+        <div class="vz-res-r">
+          <a class="btn btn-t" href="./" data-reset hidden>{{ icon("x", 15) }} Filter zurücksetzen</a>
+          <span class="muted klein" data-sort-info>Sortiert nach Eignung (beste zuerst)</span>
+          <label class="vz-sort-m">Sortieren:
+            <select data-sort-select>
+              <option value="">Eignung</option><option value="leistung">Leistung</option><option value="ort">Datenort</option>
+              <option value="pd">Personendaten</option><option value="bg">Berufsgeheimnis</option><option value="name">Name</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="vz-hinweis" data-bg-hinweis hidden><b>Wichtig bei Berufsgeheimnissen:</b> Auch bei geeigneten Tools braucht es fast immer eine Zusatzvereinbarung mit dem Anbieter, und die Websuche muss ausgeschaltet sein.</div>
+
+      <div class="vz-tbl" role="table" aria-label="KI-Tools" id="vz-tbl">
+        <div class="vz-head" role="row">
+          <a role="columnheader" href="?sort=name" data-sort="name">Tool</a>
+          <span role="columnheader">Art &amp; Funktionen</span>
+          <a role="columnheader" href="?sort=ort" data-sort="ort">Datenort</a>
+          <a role="columnheader" href="?sort=leistung" data-sort="leistung" title="Qualität der verfügbaren KI-Modelle – passend zum gewählten Datenort">Leistung</a>
+          <a role="columnheader" href="?sort=pd" data-sort="pd">Personendaten</a>
+          <a role="columnheader" href="?sort=bg" data-sort="bg">Berufsgeheimnis</a>
+          <span role="columnheader">Darauf achten</span>
+        </div>
+        {% for t in tools %}
+        <a class="vz-row" role="row" href="{{ url('tool/' ~ t.id ~ '/') }}" data-drawer
+           data-dh="{{ t.datenhaltung }}" data-pd="{{ t.ampel_pd.key }}" data-bg="{{ t.ampel_bg.key }}"
+           data-r-dh="{{ t.dh.rang }}" data-r-pd="{{ t.ampel_pd.rang }}" data-r-bg="{{ t.ampel_bg.rang }}"
+           data-r-gr="{{ gruppe_rang[t.gruppe] }}" data-pp="{{ t.pruefpunkte }}" data-gruppe="{{ t.gruppe }}"
+           data-funk="{{ t.funktionen|sort|join(' ') }}" data-cloud="{{ t.cloud_act }}" data-vischer="{{ 1 if t.vischer else 0 }}"
+           data-name="{{ t.name|lower }}" data-such="{{ t.suchtext }}" data-an="{{ t.anbieter|lower }}" data-kt="{{ t.such_kategorie }}"
+           data-l-ch="{{ t.leistung_passend('ch').key }}" data-l-eu="{{ t.leistung_passend('eu').key }}" data-l-gl="{{ t.leistung_passend('').key }}">
+          <span class="c-tool" role="cell">
+            <span class="nm">{{ t.name }}</span>
+            <span class="an"><span class="reg" title="{{ t.raw.region_anbieter }}">{{ t.region_kurz }}</span>{{ t.anbieter }}{% if t.vischer %}<span class="chip chip-v">VISCHER</span>{% endif %}</span>
+          </span>
+          <span class="c-art" role="cell">{{ kat(t) }}{{ kann_auch(t, 3) }}</span>
+          <span class="c-ort" role="cell">{{ ort(t) }}</span>
+          <span class="c-lst" role="cell" data-lst>{{ lst(t.leistung_passend(''), true) }}</span>
+          <span class="c-amp" role="cell">{{ amp(t.ampel_pd, "Personendaten: ") }}</span>
+          <span class="c-amp" role="cell">{{ amp(t.ampel_bg, "Berufsgeheimnis: ") }}</span>
+          <span class="c-hinweis" role="cell">{{ t.raw.hinweise_fallstricke or "–" }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      <div class="vz-leer" data-leer hidden>
+        <h3>Keine Tools für diese Auswahl</h3>
+        <p>Entfernen Sie eine Funktion oder wählen Sie einen weiteren Datenort.</p>
+        <a class="btn btn-g" href="./">Alle Filter zurücksetzen</a>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}{{ vz_config|json_script("vz-config") }}{% endblock %}

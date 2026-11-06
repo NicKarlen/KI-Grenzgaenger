@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "_makros.html" import kat, ort %}
+{% block title %}{{ tool.name }}{% endblock %}
+{% block description %}{{ tool.name }} ({{ tool.anbieter }}): Datenort {{ tool.dh.label }}, Personendaten «{{ tool.ampel_pd.label }}», Berufsgeheimnis «{{ tool.ampel_bg.label }}». Steckbrief im KI-Grenzgänger.{% endblock %}
+{% block content %}
+<div class="wrap lese">
+  <a class="zurueck" href="{{ url('verzeichnis/') }}" data-back>← Zurück</a>
+  {% include "_steckbrief.html" %}
+
+  {% if aehnlich %}
+  <section class="aehnlich">
+    <h2>Ähnliche Tools</h2>
+    <ul class="mini">
+      {% for t in aehnlich %}
+      <li><a href="{{ url('tool/' ~ t.id ~ '/') }}">
+        {{ kat(t) }}
+        <strong>{{ t.name }}</strong>
+        <span class="muted klein">{{ t.anbieter }}</span>
+        {{ ort(t) }}
+      </a></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

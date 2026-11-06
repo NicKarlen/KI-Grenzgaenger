@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Seite nicht gefunden{% endblock %}
+{% block head %}
+  <meta name="robots" content="noindex">
+  {# GitHub Pages liefert diese Seite für jede unbekannte Adresse aus. Damit Stylesheet und Links stimmen,
+     wird die Basis-Adresse (Projektseite /<repo>/ oder eigene Domain /) per Skript gesetzt. #}
+  <script>
+    (function () {
+      var teile = location.pathname.split("/").filter(Boolean);
+      var basis = location.hostname.endsWith("github.io") && teile.length ? "/" + teile[0] + "/" : "/";
+      document.write('<base href="' + basis + '">');
+      document.documentElement.setAttribute("data-root", basis);
+    })();
+  </script>
+{% endblock %}
+{% block content %}
+<div class="wrap narrow prosa">
+  <p class="eyebrow">Fehler 404</p>
+  <h1>Diese Seite gibt es nicht</h1>
+  <p class="lead">Vielleicht wurde ein Tool umbenannt oder der Link ist veraltet.</p>
+  <p><a class="btn btn-p" href="./">Zum Berater</a> <a class="btn btn-g" href="verzeichnis/">Zum Verzeichnis</a></p>
+</div>
+{% endblock %}

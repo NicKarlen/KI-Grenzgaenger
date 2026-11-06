@@ -1,0 +1,41 @@
+<!doctype html>
+<!-- Vorlage für das LinkedIn-Vorschaubild (grenzgaenger/static/og-bild.png, 1200×627).
+     Neu erzeugen:  .venv\Scripts\python design\build_og_bild.py -->
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 1200px; height: 627px; overflow: hidden; }
+  body {
+    background: #faf9f5; color: #141413;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 64px 80px; box-sizing: border-box; position: relative;
+  }
+  body::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: #c96442; }
+  .brand { display: flex; align-items: center; gap: 18px; font-family: "Palatino Linotype", Palatino, Georgia, serif; font-size: 34px; }
+  .brand .m { width: 56px; height: 56px; border-radius: 14px; background: #c96442; display: grid; place-items: center; }
+  .brand b { color: #c96442; font-weight: 500; }
+  h1 { font-family: "Palatino Linotype", Palatino, Georgia, serif; font-weight: 500; font-size: 74px; line-height: 1.08; letter-spacing: -0.015em; margin: 0; max-width: 1000px; }
+  p { font-size: 30px; color: #4d4c48; margin: 22px 0 0; max-width: 980px; line-height: 1.35; }
+  .chips { display: flex; gap: 14px; font-size: 24px; color: #4d4c48; }
+  .chip { display: inline-flex; align-items: center; gap: 10px; background: #fff; border: 2px solid #e6e2d6; border-radius: 999px; padding: 8px 20px; }
+  .chip i { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+  <div class="brand">
+    <span class="m"><svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 3v3M12 9.5v5M12 18v3M4 12h15M15.5 8.5 19 12l-3.5 3.5" fill="none" stroke-linecap="round" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg></span>
+    <span><b>KI</b>-Grenzgänger</span>
+  </div>
+  <div>
+    <h1>Welche KI darf mit Ihren Firmendaten über die Grenze?</h1>
+    <p>Über 100 KI-Tools eingeordnet: Schweiz, Europa oder USA – und sind Kundendaten erlaubt?</p>
+  </div>
+  <div class="chips">
+    <span class="chip"><i style="background:#2f8a57"></i>Geeignet</span>
+    <span class="chip"><i style="background:#b8820e"></i>Mit Vorkehrungen</span>
+    <span class="chip"><i style="background:#c0392b"></i>Nicht geeignet</span>
+      </div>
+</body>
+</html>
