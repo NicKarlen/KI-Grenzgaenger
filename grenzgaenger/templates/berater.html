@@ -45,13 +45,13 @@
       <p class="tx">Für diese Kombination habe ich leider kein passendes Tool gefunden. Versuchen Sie, Ihre Daten in Europa statt nur in der Schweiz zu halten – dort ist die Auswahl deutlich grösser.</p>
       {% else %}
       <p class="tx">Für {{ sens_text }}{% if ort_text %}, mit Daten {{ ort_text }},{% endif %} erfüllen <b>{{ liste|length }} {% if liste|length == 1 %}Tool{% else %}Tools{% endif %}</b> Ihre Vorgaben.
-        {% if rollen[0].rolle == "beide" %}Ein Tool bietet hier die stärkste KI <em>und</em> den besten Datenschutz zugleich – das ist meine erste Wahl:{% elif mit_leistung and rollen|length > 1 %}Statt einer Rangliste zeige ich Ihnen, wo Sie wählen müssen – zwischen der stärksten KI und dem besten Datenschutz:{% elif rollen|length == 1 %}Das ist meine Empfehlung:{% else %}Das sind meine Empfehlungen:{% endif %}</p>
+        {% if rollen[0].gleichstand %}Hier liegen mehrere Tools bei Leistung und Datenschutz gleichauf – die Wahl ist vor allem eine Frage von Preis und Bedienung:{% elif rollen[0].rolle == "beide" %}Ein Tool bietet hier die stärkste KI <em>und</em> den besten Datenschutz zugleich – das ist meine erste Wahl:{% elif mit_leistung and rollen|length > 1 %}Statt einer Rangliste zeige ich Ihnen, wo Sie wählen müssen – zwischen der stärksten KI und dem besten Datenschutz:{% elif rollen|length == 1 %}Das ist meine Empfehlung:{% else %}Das sind meine Empfehlungen:{% endif %}</p>
 
       <div class="vb-recs">
         {% for r in rollen %}
         {% set t = r.tool %}
         <article class="vb-rec rolle-{{ r.rolle }}">
-          <div class="rolle"><b>{{ r.label }}</b><span>{{ r.hilfe }}</span></div>
+          <div class="rolle"><b>{{ r.label }}</b><span>{{ r.gleichstand or r.hilfe }}</span></div>
           <div class="top">
             <div class="hd">{{ kat(t) }}{% if t.vischer %}<span class="chip chip-v">VISCHER-geprüft</span>{% endif %}</div>
             <h3>{{ t.name }}</h3>

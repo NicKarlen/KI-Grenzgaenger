@@ -614,6 +614,7 @@ ROLLEN = {
     "datenschutz": {"label": "Bester Datenschutz", "hilfe": "Die sicherste Wahl für Ihre Daten"},
     "kompromiss": {"label": "Guter Kompromiss", "hilfe": "Gute Leistung bei gutem Datenschutz"},
     "weitere": {"label": "Ebenfalls passend", "hilfe": "Eine weitere gute Wahl"},
+    "gleich": {"label": "Gleich gut", "hilfe": "Gleiche Leistung und gleicher Datenschutz wie die erste Empfehlung"},
 }
 _P_AMPEL = {"gruen": 2, "gelb": 1.25, "abh": 1, "offen": 0.5, "orange": 0.25, "rot": 0}
 _P_ORT = {"ch": 1, "eu": 0.75, "eub": 0.5, "unklar": 0.25, "us": 0, "cn": 0}
@@ -643,8 +644,14 @@ def empfehlen(liste: list[Tool], sens: str = "", ort: str = "", leistung: bool =
     def profil(t):
         return (lp(t), amp(t)["key"], t.datenhaltung, t.cloud_act)
 
+    def zweit(t):
+        # Die jeweils andere Ampel: bei Personendaten-Fragen zählt das Berufsgeheimnis als Bonus und umgekehrt
+        return t.ampel_pd if sens == "bg" else t.ampel_bg
+
     def basis(t):
-        return (GRUPPE_RANG[t.gruppe], t.pruefpunkte, t.name.lower())
+        # Reihenfolge bei Gleichstand: rechtlich geprüft vor ungeprüft, bessere zweite Ampel, weniger offene
+        # Angaben – erst ganz am Schluss der Name (dann sind die Tools wirklich gleichwertig).
+        return (GRUPPE_RANG[t.gruppe], not t.vischer, zweit(t)["rang"], t.pruefpunkte, t.name.lower())
 
     def gesamt_key(t):
         return (-score(t), -(lp(t) or _L_NEUTRAL), amp(t)["rang"], t.dh["rang"], *basis(t))
@@ -681,7 +688,30 @@ def empfehlen(liste: list[Tool], sens: str = "", ort: str = "", leistung: bool =
         if not any(t is x for _, x in gewaehlt):
             gewaehlt.append(("weitere", t))
 
-    rollen = [{"rolle": r, **ROLLEN[r], "tool": t, "leistung": t.leistung_passend(ort)} for r, t in gewaehlt]
+    # Gleichstand ehrlich zeigen: Tools mit gleicher Leistung und gleichem Datenschutz wie die erste Empfehlung
+    # heissen «Gleich gut», und bei der ersten steht, warum sie trotzdem vorne liegt.
+    erster = gewaehlt[0][1]
+
+    def gleichauf(t):
+        return profil(t) == profil(erster) and score(t) == score(erster)
+
+    gewaehlt = [(("gleich" if r in ("kompromiss", "weitere") and gleichauf(t) else r), t) for r, t in gewaehlt]
+    rollen = [{"rolle": r, **ROLLEN[r], "tool": t, "leistung": t.leistung_passend(ort), "gleichstand": ""}
+              for r, t in gewaehlt]
+    gleiche = [t for r, t in gewaehlt if r == "gleich"]
+    if gleiche:
+        andere = "Personendaten" if sens == "bg" else "das Berufsgeheimnis"
+        if erster.vischer and not all(t.vischer for t in gleiche):
+            grund = "rechtlich von VISCHER geprüft"
+        elif all(zweit(erster)["rang"] < zweit(t)["rang"] for t in gleiche):
+            grund = f"auch für {andere} besser bewertet"
+        elif all(erster.pruefpunkte < t.pruefpunkte for t in gleiche):
+            grund = "weniger offene Angaben"
+        else:
+            grund = ""
+        mit = "einem weiteren Tool" if len(gleiche) == 1 else f"{len(gleiche)} weiteren Tools"
+        rollen[0]["gleichstand"] = (f"Gleichauf mit {mit} – steht vorne, weil {grund}." if grund
+                                    else f"Gleichauf mit {mit} – die Reihenfolge sagt nichts über die Qualität aus.")
     rest = sorted((t for t in liste if not any(t is x for _, x in gewaehlt)), key=gesamt_key)
     return rollen, rest
 
