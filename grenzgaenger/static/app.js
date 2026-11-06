@@ -26,7 +26,24 @@ document.addEventListener("DOMContentLoaded", () => {
   initSuche();
   initZurueck();
   initTeilen();
+  initMenu();
 });
+
+/* ---------- Menü auf dem Handy ---------- */
+function initMenu() {
+  const btn = document.querySelector("[data-menu]");
+  const nav = document.getElementById("hauptnav");
+  if (!btn || !nav) return;
+  const setzen = (auf) => {
+    nav.classList.toggle("offen", auf);
+    btn.setAttribute("aria-expanded", String(auf));
+  };
+  btn.addEventListener("click", (e) => { e.stopPropagation(); setzen(!nav.classList.contains("offen")); });
+  document.addEventListener("click", (e) => { if (!nav.contains(e.target)) setzen(false); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav.classList.contains("offen")) { setzen(false); btn.focus(); }
+  });
+}
 
 /* ---------- Ergebnis teilen (LinkedIn, Link kopieren) ---------- */
 function initTeilen() {

@@ -412,14 +412,26 @@ a.opt:hover { color: var(--text); border-color: var(--accent); transform: transl
   .vb-cmp table { min-width: 480px; }
   .dr-bd { padding: 1.1rem 1.1rem 3rem; }
 }
+/* Menü-Knopf: nur auf dem Handy und nur mit JavaScript (ohne JS bleibt die Navigation sichtbar) */
+.menu-btn { display: none; align-items: center; gap: .4rem; font: inherit; font-size: .9rem; font-weight: 500; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .4rem .75rem; cursor: pointer; }
+.menu-btn:hover { border-color: var(--border-strong); }
+.menu-btn[aria-expanded="true"] { background: var(--bg-2); }
+
 @media (max-width: 560px) {
-  /* Name bleibt sichtbar (Marke!), die Navigation rutscht in eine eigene, seitlich wischbare Zeile */
-  :root { --topbar: 92px; }
-  .topbar-inner { flex-wrap: wrap; height: auto; row-gap: .15rem; padding-top: .55rem; padding-bottom: .35rem; }
   .brand { font-size: 1.05rem; }
   .brand-m { width: 26px; height: 26px; }
-  .nav { width: calc(100% + .9rem); margin: 0 -.45rem; }
-  .nav a { padding: .4rem .45rem; font-size: .86rem; }
+  /* Ohne JavaScript: Navigation in einer zweiten, wischbaren Zeile */
+  html:not(.js) .topbar-inner { flex-wrap: wrap; height: auto; padding-top: .55rem; padding-bottom: .35rem; }
+  html:not(.js) .nav { width: 100%; }
+  html:not(.js) .nav a { padding: .4rem .45rem; font-size: .86rem; }
+  /* Mit JavaScript: eine Zeile mit «Menü», darunter ein aufklappendes Menü über die ganze Breite */
+  .js .menu-btn { display: inline-flex; }
+  .js .nav { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: .15rem;
+    background: var(--bg); border-bottom: 1px solid var(--border); box-shadow: var(--shadow-lg); padding: .5rem 16px 1rem; }
+  .js .nav.offen { display: flex; }
+  .js .nav a { font-size: 1.02rem; padding: .8rem .9rem; border-radius: 10px; }
+  .js .nav a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); }
 }
 
 /* ---------- Berater: weitere Tools aufklappen ---------- */
