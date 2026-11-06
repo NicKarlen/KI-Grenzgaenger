@@ -226,7 +226,6 @@ a.opt:hover { color: var(--text); border-color: var(--accent); transform: transl
 .vb-list .an { font-size: .8rem; color: var(--text-3); }
 .vb-list .rt { display: flex; flex-direction: column; align-items: flex-end; gap: .3rem; }
 .vb-mehr { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .6rem; }
-.vb-teilen { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; font-size: .9rem; }
 .vb-comp { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 20px 1rem; background: linear-gradient(transparent, var(--bg) 35%); z-index: 20; margin: 0; }
 .vb-comp-in { max-width: 760px; margin: 0 auto; position: relative; }
 .vb-box { background: var(--surface); border: 1px solid var(--border-strong); border-radius: 20px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: .5rem; padding: .55rem .55rem .55rem 1.1rem; }

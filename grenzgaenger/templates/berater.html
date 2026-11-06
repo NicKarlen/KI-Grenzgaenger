@@ -96,12 +96,6 @@
       <div class="vb-tip"><b>Mein Hinweis:</b> Schliessen Sie mit dem Anbieter einen Auftragsverarbeitungsvertrag (AVV) ab und verwenden Sie nie die Gratis-Version für Kundendaten.</div>
       {% endif %}
       {% endif %}
-      {% set link = site_url ~ pfad if site_url else "" %}
-      <div class="vb-teilen" data-teilen>
-        <span class="muted">Ergebnis teilen:</span>
-        <a class="btn btn-g" href="https://www.linkedin.com/sharing/share-offsite/?url={{ link|urlencode }}" target="_blank" rel="noopener" data-linkedin>{{ icon("linkedin", 15) }} Auf LinkedIn</a>
-        <button class="btn btn-g" type="button" data-kopieren hidden>{{ icon("link", 15) }} <span>Link kopieren</span></button>
-      </div>
     </div>
   </div>
 

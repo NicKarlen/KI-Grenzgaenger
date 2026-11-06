@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initVerzeichnis();
   initSuche();
   initZurueck();
-  initTeilen();
   initMenu();
 });
 
@@ -42,26 +41,6 @@ function initMenu() {
   document.addEventListener("click", (e) => { if (!nav.contains(e.target)) setzen(false); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && nav.classList.contains("offen")) { setzen(false); btn.focus(); }
-  });
-}
-
-/* ---------- Ergebnis teilen (LinkedIn, Link kopieren) ---------- */
-function initTeilen() {
-  const box = document.querySelector("[data-teilen]");
-  if (!box) return;
-  const link = location.href.split("#")[0];
-  const li = box.querySelector("[data-linkedin]");
-  // Ohne fest eingestellte Adresse (lokal) die aktuelle Adresse verwenden
-  if (li && li.href.endsWith("url=")) li.href += encodeURIComponent(link);
-  const btn = box.querySelector("[data-kopieren]");
-  if (!btn || !navigator.clipboard) return;
-  btn.hidden = false;
-  btn.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(link);
-      btn.querySelector("span").textContent = "Kopiert ✓";
-      setTimeout(() => (btn.querySelector("span").textContent = "Link kopieren"), 2000);
-    } catch (e) { /* Zwischenablage gesperrt – Adresszeile bleibt als Ausweg */ }
   });
 }
 
