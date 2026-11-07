@@ -1,8 +1,8 @@
 # KI-Grenzgänger
 
-**Welche KI darf mit Ihren Firmendaten über die Grenze?**
+**Welche KI geht mit Ihren Firmendaten über die Grenze?**
 
-![KI-Grenzgänger – Welche KI darf mit Ihren Firmendaten über die Grenze?](grenzgaenger/static/og-bild.png)
+![KI-Grenzgänger – Welche KI geht mit Ihren Firmendaten über die Grenze?](grenzgaenger/static/og-bild.png)
 
 Über 100 KI-Tools aus der Schweiz, Europa und den USA, eingeordnet nach zwei Fragen:
 **Wo liegen die Daten?** und **Darf ich Kunden- oder Personendaten eingeben?**

@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Vorlage für das Vorschaubild (grenzgaenger/static/og-bild.png, 1200×627, gerendert in doppelter Auflösung).
+<!-- Vorlage für das Vorschaubild (grenzgaenger/static/og-bild.png, 1200×627 – genau die Grösse, die LinkedIn anzeigt; so verkleinert LinkedIn nicht selbst).
      Alles Wichtige steht in der Mitte (627×627): WhatsApp & Co. schneiden daraus ein Quadrat aus.
      Neu erzeugen:  .venv\Scripts\python design\build_og_bild.py -->
 <html lang="de-CH">
@@ -13,24 +13,24 @@
     position: relative;
   }
   /* Grenzlinien links und rechts – ausserhalb des quadratischen Ausschnitts */
-  .grenze { position: absolute; top: 70px; bottom: 70px; width: 0; border-left: 5px dashed #e3d6cc; }
+  .grenze { position: absolute; top: 70px; bottom: 70px; width: 0; border-left: 5px dashed #cdb8a8; }
   .grenze.l { left: 205px; } .grenze.r { right: 205px; }
   .pfeil { position: absolute; top: 50%; width: 150px; height: 60px; margin-top: -30px; }
   .pfeil.l { left: 130px; } .pfeil.r { right: 130px; }
   .m { width: 112px; height: 112px; border-radius: 28px; background: #c96442; display: grid; place-items: center; margin-bottom: 22px; }
   .name { font-family: "Palatino Linotype", Palatino, Georgia, serif; font-size: 50px; margin-bottom: 26px; }
   .name b { color: #c96442; font-weight: 500; }
-  h1 { font-family: "Palatino Linotype", Palatino, Georgia, serif; font-weight: 500; font-size: 46px; line-height: 1.15; margin: 0; max-width: 560px; color: #3a3935; }
+  h1 { font-family: "Palatino Linotype", Palatino, Georgia, serif; font-weight: 500; font-size: 46px; line-height: 1.15; margin: 0; max-width: 560px; color: #24231f; }
   .unten { position: absolute; bottom: 0; left: 0; right: 0; height: 14px; background: #c96442; }
 </style>
 </head>
 <body>
   <div class="grenze l"></div><div class="grenze r"></div>
-  <svg class="pfeil l" viewBox="0 0 150 60"><path d="M10 30h120M112 14l18 16-18 16" fill="none" stroke="#c96442" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/></svg>
-  <svg class="pfeil r" viewBox="0 0 150 60"><path d="M10 30h120M112 14l18 16-18 16" fill="none" stroke="#c96442" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/></svg>
+  <svg class="pfeil l" viewBox="0 0 150 60"><path d="M10 30h120M112 14l18 16-18 16" fill="none" stroke="#c96442" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/></svg>
+  <svg class="pfeil r" viewBox="0 0 150 60"><path d="M10 30h120M112 14l18 16-18 16" fill="none" stroke="#c96442" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/></svg>
   <div class="m"><svg viewBox="0 0 24 24" width="66" height="66"><path d="M12 3v3M12 9.5v5M12 18v3M4 12h15M15.5 8.5 19 12l-3.5 3.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   <div class="name"><b>KI</b>-Grenzgänger</div>
-  <h1>Welche KI darf<br>mit Ihren Firmendaten<br>über die Grenze?</h1>
+  <h1>Welche KI geht<br>mit Ihren Firmendaten<br>über die Grenze?</h1>
   <div class="unten"></div>
 </body>
 </html>
